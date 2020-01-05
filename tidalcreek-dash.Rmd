@@ -1,0 +1,12 @@
+---
+title: "TIDAL CREEK DASHBOARD"
+output: 
+  flexdashboard::flex_dashboard:
+     logo: www/tarponlogo.png
+runtime: shiny
+css: styles.css
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+```
