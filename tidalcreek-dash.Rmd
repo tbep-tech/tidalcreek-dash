@@ -1,5 +1,5 @@
 ---
-title: "TIDAL CREEK DASHBOARD"
+title: "TIDAL CREEKS DASHBOARD"
 output: 
   flexdashboard::flex_dashboard:
      logo: www/tarponlogo.png
@@ -9,4 +9,80 @@ css: styles.css
 
 ```{r setup, include=F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+library(tidyverse)
+library(tbeptools)
+library(mapview)
+library(leaflet)
+library(mapedit)
+library(sf)
+
+data(tidres)
+data(tidalcreeks)
+```
+
+```{r reactives}
+# overview map
+allmap <- reactive({
+  
+  out <- show_tdlcrk(tidres)
+  
+  return(out)
+  
+})
+
+# reactive edits module for map selection
+edits <- reactive({
+  
+  # input
+  allmap <- allmap()
+  
+  out <- callModule(editMod, 'editor', allmap)
+  
+  return(out)
+  
+})
+
+# selection from map as sf object, same crs as biodat
+mapsel <- reactive({
+
+  # input
+  edits <- edits()()
+  
+  # requires edits to continue  
+  req(edits$finished)
+
+  # get selection
+  out <- edits$finished %>% 
+    st_transform(crs = st_crs(tidalcreeks)) %>% 
+    st_intersection(tidalcreeks, .) %>% 
+    st_set_geometry(NULL) %>% 
+    select(id) %>% 
+    left_join(tidres, by = 'id')
+  
+  # requires objects in edits to continue
+  req(nrow(out) > 0)
+  
+  return(out)
+
+})
+```
+
+SUMMARY ASSESSMENTS
+===========================================================
+
+Column {.tabset .tabset-fade data-width=650}
+-----------------------------------------------------------------------
+
+### OVERVIEW
+
+```{r allmap}
+# map selection
+editModUI('editor', height = 500)
+renderTable(mapsel())
+```
+
+### INDIVIDUAL CREEKS
+
+```{r}
 ```
