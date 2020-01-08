@@ -16,11 +16,10 @@ library(mapedit)
 library(leaflet.extras)
 library(sf)
 library(reactable)
-library(sparkline)
 
-# style file
-styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
-writeLines(styles, 'styles.css')
+# # style file
+# styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
+# writeLines(styles, 'styles.css')
 
 data(tidres)
 data(tidalcreeks)
