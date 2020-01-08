@@ -10,12 +10,14 @@ css: styles.css
 ```{r setup, include=F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
+library(flexdashboard)
 library(tidyverse)
 library(tbeptools)
 library(mapedit)
 library(leaflet.extras)
 library(sf)
 library(reactable)
+library(shinydashboard)
 
 # # style file
 # styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
@@ -24,20 +26,8 @@ library(reactable)
 data(tidres)
 data(tidalcreeks)
 
-# color function for reactable cells
-colfun <- function(x){
-  
-  out <- case_when(
-    x == 'No Data' ~ 'lightblue', 
-    x == 'Green' ~ 'green', 
-    x == 'Yellow' ~ 'yellow', 
-    x == 'Orange' ~ 'orange', 
-    x == 'Red' ~ 'red'
-  )
-  
-  return(out)
-  
-}
+source('R/funcs.R')
+
 ```
 
 ```{r reactives}
@@ -80,9 +70,7 @@ mapsel <- reactive({
   edits <- edits()()
   
   # requires edits to continue  
-  validate(
-    need(!is.null(edits$finished), 'Make selection from map')
-  )
+  req(!is.null(edits$finished))
 
   # get selection
   out <- edits$finished %>% 
@@ -93,10 +81,7 @@ mapsel <- reactive({
     mutate(`Length (km)` = round(Creek_Length_m / 1000, 2)) %>% 
     select(wbid, JEI, `Length (km)`, target, caution, action, threshold, score)
   
-  # requires objects in edits to continue
-  validate(
-    need(nrow(out) > 0, 'No creeks in selection')
-  )
+  req(nrow(out) > 0)
   
   return(out)
 
@@ -105,9 +90,14 @@ mapsel <- reactive({
 # reactable output from map selection
 maptab <- reactive({
   
-  # input
+  # requires edits to continue  
+  validate(
+    need(!is.null(edits()()$finished), 'Make selection from map')
+  )
+  
+  # inputs
   mapsel <- mapsel()
-
+  
   # format
   out <- reactable(mapsel, 
                    columns = list(
@@ -126,7 +116,7 @@ maptab <- reactive({
                               bar <- div(
                                 class = "bar-chart",
                                 style = list(marginRight = "6px"),
-                                div(class = "bar", style = list(width = width, backgroundColor = "#3fc1c9"))
+                                div(class = "bar", style = list(width = width, backgroundColor = "#958984"))
                               )
                               div(class = "bar-cell", span(class = "number", value), bar)
                             }
@@ -159,6 +149,105 @@ maptab <- reactive({
   return(out)
   
 })
+
+# no data gauge
+nodtscr <- reactive({
+  
+  # input
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  # get gauge
+  out <- sumfun(mapsel, sumsel, typsel, 'No Data')
+  
+  return(out)
+  
+})
+
+# green gauge
+grenscr <- reactive({
+  
+  # input
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  # get gauge
+  out <- sumfun(mapsel, sumsel, typsel, 'Green')
+  
+  return(out)
+
+})
+
+# yellow gauge
+yellscr <- reactive({
+    
+  # input
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  # get gauge
+  out <- sumfun(mapsel, sumsel, typsel, 'Yellow')
+  
+  return(out)
+  
+})
+
+# orange gauge
+orngscr <- reactive({
+    
+  # input
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  # get gauge
+  out <- sumfun(mapsel, sumsel, typsel, 'Orange')
+  
+  return(out)
+  
+})
+
+# reds gauge
+redsscr <- reactive({
+  
+  # input
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  # get gauge
+  out <- sumfun(mapsel, sumsel, typsel, 'Red')
+  
+  return(out)
+  
+})
+
+# summary text
+sumtxt <- reactive({
+  
+  mapsel <- mapsel()
+  sumsel <- input$sumsel
+  typsel <- input$typsel
+  
+  req(typsel == 'sum')
+  
+  if(sumsel == 'by count')
+    tot <- nrow(mapsel) %>% 
+    paste('streams')
+  
+  if(sumsel == 'by creek length')
+    tot <- sum(mapsel$`Length (km)`) %>% 
+      round(1) %>% 
+      paste('km')
+    
+  out <- paste('Total in selection:', tot)
+  
+  return(out)
+  
+})
 ```
 
 SUMMARY ASSESSMENTS
@@ -170,15 +259,43 @@ Column {.tabset .tabset-fade data-width=650}
 ### MAP SELECTION
 
 ```{r allmap}
+output$nodtscr <- renderGauge(nodtscr())
+output$grenscr <- renderGauge(grenscr())
+output$yellscr <- renderGauge(yellscr())
+output$orngscr <- renderGauge(orngscr())
+output$redsscr <- renderGauge(redsscr())
+
 fillRow(
   flex = c(0.5, 0.02,  1),
   editModUI('editor', height = 500),
   renderText(NULL), # spacer
-  renderReactable(maptab())
+  fillCol(
+    flex = c(1, NA, 0.25),
+    renderReactable(maptab()),
+    inputPanel(
+          selectInput('sumsel', 'Select summary category:', choices = c('by count', 'by creek length')), 
+          selectInput('typsel', 'Select summary type:', choices = c('%', 'sum')), 
+          renderText(sumtxt())
+        ),
+    fillRow(
+      # column(12, 
+      # shinydashboard::box(gaugeOutput('nodtscr'), title = HTML('<h5>No Data</h5>'), width = 2),
+      # shinydashboard::box(gaugeOutput('grenscr'), title = HTML('<h5>Green</h5>'), width = 2),
+      # shinydashboard::box(gaugeOutput('yellscr'), title = HTML('<h5>Yellow</h5>'), width = 2),
+      # shinydashboard::box(gaugeOutput('orngscr'), title = HTML('<h5>Orange</h5>'), width = 2),
+      # shinydashboard::box(gaugeOutput('redsscr'), title = HTML('<h5>Red</h5>'), width = 2)
+      # )
+      gaugeOutput('nodtscr'),
+      gaugeOutput('grenscr'),
+      gaugeOutput('yellscr'),
+      gaugeOutput('orngscr'),
+      gaugeOutput('redsscr')
+    )
+  )
 )
 ```
 
-### FIGURE
+### DOWNLOAD
 
-```{r}
-```
+
+
