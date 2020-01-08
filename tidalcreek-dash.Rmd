@@ -286,7 +286,7 @@ dwntab <- reactive({
 ```{r downloadhandlers}
 
 # data for observed species
-output$dldwndat <- downloadHandler(
+output$dldwntab <- downloadHandler(
   filename = function(){'tidalcreek_sel.csv'},
   content = function(file){
     todl <- mapsel() 
