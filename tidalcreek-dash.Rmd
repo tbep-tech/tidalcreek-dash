@@ -12,13 +12,33 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
 library(tidyverse)
 library(tbeptools)
-library(mapview)
-library(leaflet)
 library(mapedit)
+library(leaflet.extras)
 library(sf)
+library(reactable)
+library(sparkline)
+
+# style file
+styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
+writeLines(styles, 'styles.css')
 
 data(tidres)
 data(tidalcreeks)
+
+# color function for reactable cells
+colfun <- function(x){
+  
+  out <- case_when(
+    x == 'No Data' ~ 'lightblue', 
+    x == 'Green' ~ 'green', 
+    x == 'Yellow' ~ 'yellow', 
+    x == 'Orange' ~ 'orange', 
+    x == 'Red' ~ 'red'
+  )
+  
+  return(out)
+  
+}
 ```
 
 ```{r reactives}
@@ -37,7 +57,18 @@ edits <- reactive({
   # input
   allmap <- allmap()
   
-  out <- callModule(editMod, 'editor', allmap)
+  # this modifies available options in map selection toolber
+  tomap <- allmap %>% 
+    addDrawToolbar(
+      polylineOptions = FALSE,
+      circleOptions = FALSE,
+      circleMarkerOptions = FALSE,
+      markerOptions = FALSE,
+      editOptions = editToolbarOptions()#,
+      # singleFeature = TRUE
+    )
+  
+  out <- callModule(editMod, 'editor', tomap)
   
   return(out)
   
@@ -50,21 +81,84 @@ mapsel <- reactive({
   edits <- edits()()
   
   # requires edits to continue  
-  req(edits$finished)
+  validate(
+    need(!is.null(edits$finished), 'Make selection from map')
+  )
 
   # get selection
   out <- edits$finished %>% 
     st_transform(crs = st_crs(tidalcreeks)) %>% 
     st_intersection(tidalcreeks, .) %>% 
     st_set_geometry(NULL) %>% 
-    select(id) %>% 
-    left_join(tidres, by = 'id')
+    left_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>% 
+    mutate(`Length (km)` = round(Creek_Length_m / 1000, 2)) %>% 
+    select(wbid, JEI, `Length (km)`, target, caution, action, threshold, score)
   
   # requires objects in edits to continue
-  req(nrow(out) > 0)
+  validate(
+    need(nrow(out) > 0, 'No creeks in selection')
+  )
   
   return(out)
 
+})
+
+# reactable output from map selection
+maptab <- reactive({
+  
+  # input
+  mapsel <- mapsel()
+
+  # format
+  out <- reactable(mapsel, 
+                   columns = list(
+                         score = colDef(
+                           style = function(value){
+                             list(background = colfun(value))
+                           }), 
+                         `Length (km)` = colDef(
+                            aggregate = 'sum', 
+                            format = colFormat(digits = 2),
+                            cell = function(value) {
+                              
+                              width <- paste0(value / max(mapsel$`Length (km)`) * 100, "%")
+                              value <- format(value, width = 9, justify = "right")
+
+                              bar <- div(
+                                class = "bar-chart",
+                                style = list(marginRight = "6px"),
+                                div(class = "bar", style = list(width = width, backgroundColor = "#3fc1c9"))
+                              )
+                              div(class = "bar-cell", span(class = "number", value), bar)
+                            }
+                         ), 
+                         # wbid = colDef(
+                         #   aggregate = 'count'
+                         # ), 
+                         # JEI = colDef(
+                         #   aggregate = 'count'
+                         # ),
+                         target = colDef(
+                           aggregate = 'sum'
+                         ), 
+                         caution = colDef(
+                           aggregate = 'sum'
+                         ),  
+                         action = colDef(
+                           aggregate = 'sum'
+                         ),  
+                         threshold = colDef(
+                           aggregate = 'sum'
+                         )
+                         
+                    ), 
+                   groupBy = 'score',
+                   filterable = T, pageSizeOptions = c(10, 20, nrow(mapsel)), defaultPageSize = 10,
+                   showPageSizeOptions = T, compact = T
+  )
+  
+  return(out)
+  
 })
 ```
 
@@ -74,15 +168,18 @@ SUMMARY ASSESSMENTS
 Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
 
-### OVERVIEW
+### MAP SELECTION
 
 ```{r allmap}
-# map selection
-editModUI('editor', height = 500)
-renderTable(mapsel())
+fillRow(
+  flex = c(0.5, 0.02,  1),
+  editModUI('editor', height = 500),
+  renderText(NULL), # spacer
+  renderReactable(maptab())
+)
 ```
 
-### INDIVIDUAL CREEKS
+### FIGURE
 
 ```{r}
 ```
