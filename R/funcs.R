@@ -3,7 +3,7 @@ colfun <- function(x){
   
   out <- case_when(
     x == 'No Data' ~ 'lightblue', 
-    x == 'Green' ~ 'green', 
+    x == 'Green' ~ '#00ff00', 
     x == 'Yellow' ~ 'yellow', 
     x == 'Orange' ~ 'orange', 
     x == 'Red' ~ 'red'

@@ -28,6 +28,12 @@ data(tidalcreeks)
 
 source('R/funcs.R')
 
+downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
+  tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
+                                      class), href = "", target = "_blank", download = NA, 
+         icon("download"), label, ...)
+}
+
 ```
 
 ```{r reactives}
@@ -248,6 +254,45 @@ sumtxt <- reactive({
   return(out)
   
 })
+
+# table on download tab
+dwntab <- reactive({
+  
+  # requires edits to continue  
+  validate(
+    need(!is.null(edits()()$finished), 'Make selection from map')
+  )
+  
+  # inputs
+  mapsel <- mapsel()
+  
+  # format
+  out <- reactable(mapsel, 
+                   columns = list(
+                         score = colDef(
+                           style = function(value){
+                             list(background = colfun(value))
+                           })
+                    ), 
+                    filterable = T, pageSizeOptions = c(10, 20, nrow(mapsel)), defaultPageSize = 10,
+                    showPageSizeOptions = T, compact = T
+  )
+  
+  return(out)
+  
+})
+```
+
+```{r downloadhandlers}
+
+# data for observed species
+output$dldwndat <- downloadHandler(
+  filename = function(){'tidalcreek_sel.csv'},
+  content = function(file){
+    todl <- mapsel() 
+    write.csv(todl, file, quote = T, row.names = F)
+  }
+)
 ```
 
 SUMMARY ASSESSMENTS
@@ -296,6 +341,16 @@ fillRow(
 ```
 
 ### DOWNLOAD
+
+```{r}
+fillCol(
+  flex = c(NA, 1),
+  inputPanel(
+    downloadButtonRmd('dldwntab', 'Download table')
+  ),
+  renderReactable(dwntab())
+)
+```
 
 
 
