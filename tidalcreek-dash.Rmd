@@ -7,6 +7,11 @@ runtime: shiny
 css: styles.css
 ---
 
+<style>
+
+/* this sets map editor height dynamically if in sidebar */
+</style>
+
 ```{r setup, include=F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
@@ -299,6 +304,31 @@ output$dldwntab <- downloadHandler(
 )
 ```
 
+
+Column {.sidebar data-width=400}
+===========================================================
+
+```{r}
+# map won't render on startup unless assessment tab selected to trigger maptab
+output$maptab <- renderReactable(maptab())
+
+# this renders the map by initializing maptab on startup
+outputOptions(output, "maptab", suspendWhenHidden = FALSE)
+
+# selection editor
+editModUI('editor')
+```
+
+OVERVIEW
+===========================================================
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### WELCOME TO THE TIDAL CREEK ASSESSMENT DASHBOARD!
+
+some text
+
 SUMMARY ASSESSMENTS
 ===========================================================
 
@@ -314,32 +344,20 @@ output$yellscr <- renderGauge(yellscr())
 output$orngscr <- renderGauge(orngscr())
 output$redsscr <- renderGauge(redsscr())
 
-fillRow(
-  flex = c(0.5, 0.02,  1),
-  editModUI('editor', height = 500),
-  renderText(NULL), # spacer
-  fillCol(
-    flex = c(1, NA, 0.25),
-    renderReactable(maptab()),
-    inputPanel(
-          selectInput('sumsel', 'Select summary category:', choices = c('by count', 'by creek length')), 
-          selectInput('typsel', 'Select summary type:', choices = c('%', 'sum')), 
-          renderText(sumtxt())
-        ),
-    fillRow(
-      # column(12, 
-      # shinydashboard::box(gaugeOutput('nodtscr'), title = HTML('<h5>No Data</h5>'), width = 2),
-      # shinydashboard::box(gaugeOutput('grenscr'), title = HTML('<h5>Green</h5>'), width = 2),
-      # shinydashboard::box(gaugeOutput('yellscr'), title = HTML('<h5>Yellow</h5>'), width = 2),
-      # shinydashboard::box(gaugeOutput('orngscr'), title = HTML('<h5>Orange</h5>'), width = 2),
-      # shinydashboard::box(gaugeOutput('redsscr'), title = HTML('<h5>Red</h5>'), width = 2)
-      # )
-      gaugeOutput('nodtscr'),
-      gaugeOutput('grenscr'),
-      gaugeOutput('yellscr'),
-      gaugeOutput('orngscr'),
-      gaugeOutput('redsscr')
-    )
+fillCol(
+  flex = c(1, NA, 0.25),
+  reactableOutput('maptab'),
+  inputPanel(
+        selectInput('sumsel', 'Select summary category:', choices = c('by count', 'by creek length')), 
+        selectInput('typsel', 'Select summary type:', choices = c('%', 'sum')), 
+        renderText(sumtxt())
+      ),
+  fillRow(
+    gaugeOutput('nodtscr'),
+    gaugeOutput('grenscr'),
+    gaugeOutput('yellscr'),
+    gaugeOutput('orngscr'),
+    gaugeOutput('redsscr')
   )
 )
 ```
