@@ -305,7 +305,7 @@ output$dldwntab <- downloadHandler(
 ```
 
 
-Column {.sidebar data-width=400}
+Column {.sidebar data-width=500}
 ===========================================================
 
 ```{r}
@@ -349,7 +349,7 @@ Similar to the [water quality report card](https://shiny.tbeptech.org/wq-dash/),
 
 Conceptually, these thresholds appear in the figure below.
 
-```{r, echo = F, out.width = '70%'}
+```{r, echo = F, out.width = '40%'}
 knitr::include_graphics('www/tidalcreekreport.PNG')
 ```
 
