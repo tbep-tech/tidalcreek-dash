@@ -28,6 +28,10 @@ data(tidalcreeks)
 
 source('R/funcs.R')
 
+# filter tidal creek results by tidal segments
+tidres <- tidres %>% 
+  filter(class %in% c('3M', '2'))
+
 downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
   tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
                                       class), href = "", target = "_blank", download = NA, 
@@ -83,7 +87,7 @@ mapsel <- reactive({
     st_transform(crs = st_crs(tidalcreeks)) %>% 
     st_intersection(tidalcreeks, .) %>% 
     st_set_geometry(NULL) %>% 
-    left_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>% 
+    inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>% 
     mutate(`Length (km)` = round(Creek_Length_m / 1000, 2)) %>% 
     select(wbid, JEI, `Length (km)`, target, caution, action, threshold, score)
   
