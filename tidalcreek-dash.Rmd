@@ -7,11 +7,6 @@ runtime: shiny
 css: styles.css
 ---
 
-<style>
-
-/* this sets map editor height dynamically if in sidebar */
-</style>
-
 ```{r setup, include=F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
