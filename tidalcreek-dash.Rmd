@@ -26,11 +26,15 @@ library(shinydashboard)
 data(tidres)
 data(tidalcreeks)
 
+# only show tb watershed
+tidalcreeks <- tidalcreeks[tbshed, ]
+tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
+
 source('R/funcs.R')
 
-# filter tidal creek results by tidal segments
-tidres <- tidres %>% 
-  filter(class %in% c('3M', '2'))
+# # filter tidal creek results by tidal segments
+# tidres <- tidres %>%
+#   filter(class %in% c('3M', '2'))
 
 downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
   tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
