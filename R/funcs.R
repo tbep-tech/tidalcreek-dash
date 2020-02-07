@@ -3,10 +3,10 @@ colfun <- function(x){
   
   out <- case_when(
     x == 'No Data' ~ 'lightblue', 
-    x == 'Green' ~ '#00ff00', 
-    x == 'Yellow' ~ 'yellow', 
-    x == 'Orange' ~ 'orange', 
-    x == 'Red' ~ 'red'
+    x == 'Target' ~ '#00ff00', 
+    x == 'Caution' ~ 'yellow', 
+    x == 'Investigate' ~ 'orange', 
+    x == 'Act' ~ 'coral'
   )
   
   return(out)
@@ -19,10 +19,10 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
   # select color
   gaugecols <- list(
     `No Data` = 'lightblue', 
-    `Green` = '#00ff00',
-    `Yellow` = '#ffff00', 
-    `Orange` = 'orange', 
-    `Red` = 'red'
+    `Target` = '#00ff00',
+    `Caution` = '#ffff00', 
+    `Investigate` = 'orange', 
+    `Act` = 'coral'
   )
   col <- gaugecols[[filt]]
   

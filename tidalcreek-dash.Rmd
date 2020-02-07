@@ -93,7 +93,7 @@ mapsel <- reactive({
     st_set_geometry(NULL) %>% 
     inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>% 
     mutate(`Length (km)` = round(Creek_Length_m / 1000, 2)) %>% 
-    select(wbid, JEI, `Length (km)`, target, caution, action, threshold, score)
+    select(wbid, JEI, `Length (km)`, target, caution, investigate, act, score)
   
   req(nrow(out) > 0)
   
@@ -147,10 +147,10 @@ maptab <- reactive({
                          caution = colDef(
                            aggregate = 'sum'
                          ),  
-                         action = colDef(
+                         investigate = colDef(
                            aggregate = 'sum'
                          ),  
-                         threshold = colDef(
+                         act = colDef(
                            aggregate = 'sum'
                          )
                          
@@ -188,7 +188,7 @@ grenscr <- reactive({
   typsel <- input$typsel
   
   # get gauge
-  out <- sumfun(mapsel, sumsel, typsel, 'Green')
+  out <- sumfun(mapsel, sumsel, typsel, 'Target')
   
   return(out)
 
@@ -203,7 +203,7 @@ yellscr <- reactive({
   typsel <- input$typsel
   
   # get gauge
-  out <- sumfun(mapsel, sumsel, typsel, 'Yellow')
+  out <- sumfun(mapsel, sumsel, typsel, 'Caution')
   
   return(out)
   
@@ -218,7 +218,7 @@ orngscr <- reactive({
   typsel <- input$typsel
   
   # get gauge
-  out <- sumfun(mapsel, sumsel, typsel, 'Orange')
+  out <- sumfun(mapsel, sumsel, typsel, 'Investigate')
   
   return(out)
   
@@ -233,7 +233,7 @@ redsscr <- reactive({
   typsel <- input$typsel
   
   # get gauge
-  out <- sumfun(mapsel, sumsel, typsel, 'Red')
+  out <- sumfun(mapsel, sumsel, typsel, 'Act')
   
   return(out)
   
@@ -338,13 +338,13 @@ The tidal creek dashboard uses data included in the [tbeptools](https://tbep-tec
 
 Similar to the [water quality report card](https://shiny.tbeptech.org/wq-dash/), tidal creeks are assigned to categories within a management framework intended to serve as both a mechanism for evaluating data relative to the need for regulatory action, and to identify stewardship actions that, if properly pursued, preclude the need for any regulatory actions.  These action levels were based on fish as a biological response indicator.  Additional indicators that may be more sensitive to elevated nutrient concentrations have not yet been identified and are an area of current research.  Tidal creeks are assigned to one of four categories: 
 
-<span style="color:#33FF3B">__Target__</span>: At or below nitrogen concentrations that protect individual creek types within the larger population of creeks.
+<span style="color:#33FF3B; text-shadow: 0 0 3px #333;">__Target__</span>: At or below nitrogen concentrations that protect individual creek types within the larger population of creeks.
 
-<span style="color:#F9FF33">__Caution__</span>: A site-specific early warning concentration that an individual creek may be trending towards a eutrophic condition and can help prioritize where management actions should begin to identify actions to prevent a threshold exceedance.
+<span style="color:#F9FF33; text-shadow: 0 0 3px #333;">__Caution__</span>: A site-specific early warning concentration that an individual creek may be trending towards a eutrophic condition and can help prioritize where management actions should begin to identify actions to prevent a threshold exceedance.
 
-<span style="color:#FFA500">__Action__</span>: A concentration indicating a management action level that identifies a potential degradation point as an impetus to develop site-specific management actions.
+<span style="color:#FFA500; text-shadow: 0 0 3px #333;">__Investigate__</span>: A concentration indicating a management action level that identifies a potential degradation point as an impetus to develop site-specific management actions.
 
-<span style="color:#FF3333">__Threshold__</span>: A concentration indicating that regulatory actions are needed to confirm the impairment and identify remediative actions for the creek watershed.
+<span style="color:#FF7F50; text-shadow: 0 0 3px #333;">__Act__</span>: A concentration indicating that regulatory actions may be needed to confirm the impairment and identify remediative actions for the creek watershed.
 
 Conceptually, these thresholds appear in the figure below.
 
@@ -360,8 +360,8 @@ Two different nutrient thresholds were used for assessment, the first being the 
 totab <- tidaltargets %>% 
   rename(
     Region = region,
-    Threshold = threshold,
-    Action = action, 
+    Act = act,
+    Investigate = investigate, 
     Caution = caution
   )
 knitr::kable(totab)
