@@ -3,6 +3,8 @@ title: "TIDAL CREEKS DASHBOARD"
 output: 
   flexdashboard::flex_dashboard:
      logo: www/tarponlogo.png
+     social: menu
+     source_code: "https://github.com/tbep-tech/tidalcreek-dash"
 runtime: shiny
 css: styles.css
 ---
@@ -303,21 +305,6 @@ output$dldwntab <- downloadHandler(
 )
 ```
 
-
-Column {.sidebar data-width=500}
-===========================================================
-
-```{r}
-# map won't render on startup unless assessment tab selected to trigger maptab
-output$maptab <- renderReactable(maptab())
-
-# this renders the map by initializing maptab on startup
-outputOptions(output, "maptab", suspendWhenHidden = FALSE)
-
-# selection editor
-editModUI('editor')
-```
-
 OVERVIEW
 ===========================================================
 
@@ -376,6 +363,21 @@ All site content created by [Marcus Beck](mbeck@tbep.org), with technical suppor
 SUMMARY ASSESSMENTS
 ===========================================================
 
+Column {data-width=250}
+-----------------------------------------------------------------------
+
+```{r}
+# map won't render on startup unless assessment tab selected to trigger maptab
+output$maptab <- renderReactable(maptab())
+
+# this renders the map by initializing maptab on startup
+outputOptions(output, "maptab", suspendWhenHidden = FALSE)
+
+# selection editor
+editModUI('editor')
+```
+
+
 Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
 
@@ -418,5 +420,10 @@ fillCol(
 )
 ```
 
+<!-- INDIVIDUAL CREEKS -->
+<!-- =========================================================== -->
+
+<!-- Column {data-width=250} -->
+<!-- ----------------------------------------------------------------------- -->
 
 
