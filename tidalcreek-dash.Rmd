@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 library(flexdashboard)
 library(tidyverse)
 library(tbeptools)
+# devtools::load_all('../tbeptools')
 library(mapedit)
 library(leaflet.extras)
 library(sf)
@@ -34,16 +35,18 @@ tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
 
 source('R/funcs.R')
 
-# # filter tidal creek results by tidal segments
-# tidres <- tidres %>%
-#   filter(class %in% c('3M', '2'))
+# join data to tidalcreeks sf
+tomap <- tidalcreeks %>%
+  dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>%
+  dplyr::mutate(
+    score = factor(score, levels = c('No Data', 'Target', 'Caution', 'Investigate', 'Act'))
+  )
 
 downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
   tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
                                       class), href = "", target = "_blank", download = NA, 
          icon("download"), label, ...)
 }
-
 ```
 
 ```{r reactives}
@@ -293,8 +296,51 @@ dwntab <- reactive({
 })
 ```
 
-```{r downloadhandlers}
+```{r map}
+# polyline selection
+output$map <- renderLeaflet({
+  
+  out <- show_tdlcrk(tidres)
+  
+  return(out)
+  
+})
 
+# leaflet proxy for marker select
+map <- leafletProxy('map')
+
+# binding for marker select and year
+makeReactiveBinding('selcrk')
+
+# the selection
+observeEvent(input$map_shape_click, {
+  selcrk <<- input$map_shape_click$id
+})
+
+observeEvent(input$map_shape_click, {
+  
+  # filter spatial data by selection
+  selcrkln <- tidalcreeks %>% 
+    filter(id %in% selcrk)
+  
+  # clear markers on input select, add all points and selected point
+  map <- map %>% 
+    leaflet::clearMarkers() %>%
+    leaflet::clearShapes() %>%
+    leaflet::clearControls() %>%
+    leaflet::addPolylines(data = selcrkln, opacity = 1, weight = 6, color = 'black') %>% 
+    leaflet::addLegend(data = tomap, "topright", pal = pal_exp, values = ~score,
+              title = "Creek scores",
+              opacity = 1
+    ) %>%
+    leaflet::addPolylines(data = tomap, opacity = 1, weight = 1.5, color = ~pal_exp(score),
+              layerId = ~id, label = ~paste0("WBID: ", wbid, ", JEI:", JEI, ', Creek score:', score)
+    )
+
+})
+```
+
+```{r downloadhandlers}
 # data for observed species
 output$dldwntab <- downloadHandler(
   filename = function(){'tidalcreek_sel.csv'},
@@ -420,10 +466,17 @@ fillCol(
 )
 ```
 
-<!-- INDIVIDUAL CREEKS -->
-<!-- =========================================================== -->
+INDIVIDUAL CREEKS
+===========================================================
 
-<!-- Column {data-width=250} -->
-<!-- ----------------------------------------------------------------------- -->
+Column {data-width=250}
+-----------------------------------------------------------------------
 
+```{r mapout}
+leafletOutput('map')
+```
 
+Column {.tabset .tabset-fade data-width=650}
+-----------------------------------------------------------------------
+
+### CREEK SELECTION

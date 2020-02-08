@@ -13,6 +13,12 @@ colfun <- function(x){
   
 }
 
+# color palette for leaflet
+pal_exp <- leaflet::colorFactor(
+  palette = c('lightblue', 'green', 'yellow', 'orange', 'coral'),
+  levels = c('No Data', 'Target', 'Caution', 'Investigate', 'Act')
+)
+
 # summary function for gauges
 sumfun <- function(mapsel, sumsel, typsel, filt){
   
