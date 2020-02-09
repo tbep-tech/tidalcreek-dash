@@ -21,6 +21,7 @@ library(leaflet.extras)
 library(sf)
 library(reactable)
 library(shinydashboard)
+library(plotly)
 
 # # style file
 # styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
@@ -35,12 +36,19 @@ tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
 
 source('R/funcs.R')
 
+# iwr ref year
+yr <- 2018
+
 # join data to tidalcreeks sf
 tomap <- tidalcreeks %>%
   dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>%
   dplyr::mutate(
     score = factor(score, levels = c('No Data', 'Target', 'Caution', 'Investigate', 'Act'))
   )
+
+# context data
+cntdat <- anlz_tdlcrkindic(tidalcreeks, iwrraw, yr = yr) %>% 
+  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi)
 
 downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
   tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
@@ -294,6 +302,45 @@ dwntab <- reactive({
   return(out)
   
 })
+
+# context indicators for selected creek
+cntcrk <- reactive({
+  
+  req(selcrk)
+  browser()
+  
+  # select data, fill data in record if missing years
+  out <- cntdat %>% 
+    filter(id %in% selcrk) %>% 
+    mutate(year = factor(year, levels = seq(yr - 11, yr))) %>% 
+    tidyr::complete(id, wbid, JEI, class, year)
+    
+  return(out)
+  
+})
+
+# plot of context indicators for selected creek
+cntcrkplo <- reactive({
+  
+  # input
+  cntcrk <- cntcrk()
+  
+  req(nrow(cntcrk) > 0)
+
+  p1 <- ggplot(cntcrk, aes(x = year, y = CHLAC)) + 
+    geom_bar(stat = 'identity')
+  # plot_ly(cntcrk, x = ~year, y = ~CHLAC, type = 'bar') %>% 
+    # layout(
+      # yaxis = list(title = 'Chlorophyll (ug/L)'),
+      # xaxis = list(title = '', type = 'category', categoryorder = 'array', categoryarray = ~year)
+    # )
+  
+  
+  p1
+  return(out)
+  
+})
+
 ```
 
 ```{r map}
@@ -328,7 +375,7 @@ observeEvent(input$map_shape_click, {
     leaflet::clearMarkers() %>%
     leaflet::clearShapes() %>%
     leaflet::clearControls() %>%
-    leaflet::addPolylines(data = selcrkln, opacity = 1, weight = 6, color = 'black') %>% 
+    leaflet::addPolylines(data = selcrkln, opacity = 1, weight = 8, color = 'black') %>% 
     leaflet::addLegend(data = tomap, "topright", pal = pal_exp, values = ~score,
               title = "Creek scores",
               opacity = 1
@@ -480,3 +527,15 @@ Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
 
 ### CREEK SELECTION
+
+```{r}
+renderPlotly({
+  
+  validate(
+    need(nrow(cntcrk()) > 0, 'No data...')
+  )
+  cntcrkplo()
+
+})
+```
+
