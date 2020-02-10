@@ -77,56 +77,66 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
 # bar plots of tidal creek context indicators
 show_tdlcrkindic <- function(selcrk, cntdat, yr){
   
+  labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI')
+  names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi')
+  
+  pal_yrs <- leaflet::colorFactor(
+    palette = c('#5C4A42', '#427355', '#004F7E'), #RColorBrewer::brewer.pal(8,  'Blues'),#c('#004F7E', '#00806E', '#427355', '#5C4A42', '#958984'),
+    na.color = 'yellow',
+    levels = as.character(seq(2008, 2017))
+  )
+  
   # data to plot
   toplo <- cntdat %>% 
     filter(id %in% selcrk) %>% 
     mutate(year = factor(year, levels = seq(yr - 10, yr - 1))) %>% 
-    tidyr::complete(id, wbid, JEI, class, year, fill = list(CHLAC = 0, DO = 0, TN = 0, chla_tn_ratio = 0, tsi = 0))
+    tidyr::complete(id, wbid, JEI, class, year, fill = list(CHLAC = 0, DO = 0, TN = 0, chla_tn_ratio = 0, tsi = 0)) %>% 
+    mutate(color = pal_yrs(year))
 
   if(nrow(toplo) == 0)
     return()
 
   p1 <- plot_ly(toplo, x = ~year, y = ~CHLAC, type = 'bar', text = ~round(CHLAC, 1), textposition = 'auto',
-                marker = list(color = '#00806E')
+                marker = list(color = ~color), hoverinfo = 'x'
                 ) %>% 
     layout(
-      yaxis = list(title = 'Chla (ug/L)'), 
+      yaxis = list(title = labs['CHLAC']), 
       xaxis = list(title = ''), 
       showlegend = F
     )
   
   p2 <- plot_ly(toplo, x = ~year, y = ~TN, type = 'bar', text = ~round(TN, 1), textposition = 'auto', 
-                marker = list(color = '#00806E')
+                marker = list(color = ~color), hoverinfo = 'x'
                 ) %>%  
     layout(
-      yaxis = list(title = 'TN (mg/L)'), 
+      yaxis = list(title = labs['TN']), 
       xaxis = list(title = ''), 
       showlegend = F
     )
   
   p3 <- plot_ly(toplo, x = ~year, y = ~chla_tn_ratio, type = 'bar', text = ~round(chla_tn_ratio, 1), textposition = 'auto', 
-                marker = list(color = '#00806E')
+                marker = list(color = ~color), hoverinfo = 'x'
                 ) %>% 
     layout(
-      yaxis = list(title = 'Chla:TN'), 
+      yaxis = list(title = labs['chla_tn_ratio']), 
       xaxis = list(title = ''), 
       showlegend = F
     )
   
   p4 <- plot_ly(toplo, x = ~year, y = ~DO, type = 'bar', text = ~round(DO, 1), textposition = 'auto', 
-                marker = list(color = '#00806E')
+                marker = list(color = ~color), hoverinfo = 'x'
                 ) %>%  
     layout(
-      yaxis = list(title = 'DO (mg/L)'), 
+      yaxis = list(title = labs['DO']), 
       xaxis = list(title = ''), 
       showlegend = F
     )
   
   p5 <- plot_ly(toplo, x = ~year, y = ~tsi, type = 'bar', text = ~round(tsi, 0), textposition = 'auto', 
-                marker = list(color = '#00806E')
+                marker = list(color = ~color), hoverinfo = 'x' 
                 ) %>%  
     layout(
-      yaxis = list(title = 'Florida TSI'), 
+      yaxis = list(title = labs['tsi']), 
       xaxis = list(title = ''), 
       showlegend = F
     )
@@ -136,4 +146,75 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr){
   return(out)
   
   }
+
+# ecdf plots of tidal creek context indicators
+show_tdlcrkindiccdf <- function(selcrk, cntdat, yr){
+
+  # data to plot
+  seldat <- cntdat %>% 
+    filter(id %in% selcrk) %>% 
+    mutate(year = factor(year, levels = seq(yr - 10, yr - 1))) %>% 
+    tidyr::complete(id, wbid, JEI, class, year) 
+  
+  if(nrow(seldat) == 0)
+    return()
+  
+  toplo <- seldat %>%  
+    gather('var', 'val', -id, -wbid, -JEI, -class, -year) %>% 
+    group_by(id, wbid, JEI, class, var) %>% 
+    nest() %>% 
+    mutate(
+      cntdat = list(cntdat),
+      plo = purrr::pmap(list(data, var, cntdat), function(data, var, cntdat){
+
+        labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI')
+        names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi')
+        
+        pal_yrs <- leaflet::colorFactor(
+          palette = c('#5C4A42', '#427355', '#004F7E'), #RColorBrewer::brewer.pal(8,  'Blues'),#c('#004F7E', '#00806E', '#427355', '#5C4A42', '#958984'),
+          na.color = 'yellow',
+          levels = as.character(seq(2008, 2017))
+        )
+        
+        ecdfdat <- cntdat[, var]
+        
+        ecdffun <- ecdf(ecdfdat)
+        plodat <- tibble(
+          val = seq(min(ecdfdat, na.rm = T), max(ecdfdat, na.rm = T), length.out = 100),
+          y = ecdffun(val)
+        )
+        
+        ptdat <- data %>% 
+          mutate(
+            y = ecdffun(val), 
+            color = as.character(factor(year, levels = year, labels = pal_yrs(year))),
+            year = as.character(year)
+          ) %>% 
+          na.omit
+
+        p <- plot_ly(type = 'scatter', colors = c(ptdat$color, 'black')) %>% 
+          add_trace(data = plodat, x = ~val,y = ~y, type = 'scatter', mode = 'lines', color = 'test', showlegend = F, hoverinfo = 'none', inherit = F) %>%
+          add_trace(data = ptdat, x = ~val, y = ~y, color = ~year, inherit = F, type = 'scatter', mode = 'markers', marker = list(size = 16, opacity = 0.8),
+                    hoverinfo = 'text', text = ~year, showlegend = F) %>% 
+          layout(
+            yaxis = list(title = 'Percentiles', zeroline = T),
+            xaxis = list(title = labs[var], zeroline = T)
+          )
+        
+        return(p)
+       
+      })
+    )
+
+  p1 <- toplo$plo[[1]]
+  p2 <- toplo$plo[[2]]
+  p3 <- toplo$plo[[3]]
+  p4 <- toplo$plo[[4]]
+  p5 <- toplo$plo[[5]]
+  
+  out <- subplot(p1, p2, p3, p4, p5, nrows = 2, shareY = T, titleX = T, margin = c(0.02, 0.02, 0.06, 0.06))
+  
+  return(out)
+  
+}
 

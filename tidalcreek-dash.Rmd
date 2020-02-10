@@ -314,6 +314,17 @@ cntcrkplo <- reactive({
   
 })
 
+# plot of ecdf context indicators for selected creek
+cntcrkcdf <- reactive({
+  
+  req(selcrk)
+  
+  out <- show_tdlcrkindiccdf(selcrk, cntdat, yr = yr)
+
+  return(out)
+  
+})
+
 ```
 
 ```{r map}
@@ -499,7 +510,7 @@ leafletOutput('map')
 Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
 
-### CREEK SELECTION
+### BAR PLOTS
 
 ```{r}
 renderPlotly({
@@ -517,3 +528,20 @@ renderPlotly({
 })
 ```
 
+### RELATIVE VALUES
+
+```{r}
+renderPlotly({
+  
+  validate(
+    need(!is.null(selcrk), 'Select creek from map')
+  )
+  
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+  
+  cntcrkcdf()
+
+})
+```
