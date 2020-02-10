@@ -303,40 +303,13 @@ dwntab <- reactive({
   
 })
 
-# context indicators for selected creek
-cntcrk <- reactive({
-  
-  req(selcrk)
-  browser()
-  
-  # select data, fill data in record if missing years
-  out <- cntdat %>% 
-    filter(id %in% selcrk) %>% 
-    mutate(year = factor(year, levels = seq(yr - 11, yr))) %>% 
-    tidyr::complete(id, wbid, JEI, class, year)
-    
-  return(out)
-  
-})
-
 # plot of context indicators for selected creek
 cntcrkplo <- reactive({
   
-  # input
-  cntcrk <- cntcrk()
+  req(selcrk)
   
-  req(nrow(cntcrk) > 0)
+  out <- show_tdlcrkindic(selcrk, cntdat, yr = yr)
 
-  p1 <- ggplot(cntcrk, aes(x = year, y = CHLAC)) + 
-    geom_bar(stat = 'identity')
-  # plot_ly(cntcrk, x = ~year, y = ~CHLAC, type = 'bar') %>% 
-    # layout(
-      # yaxis = list(title = 'Chlorophyll (ug/L)'),
-      # xaxis = list(title = '', type = 'category', categoryorder = 'array', categoryarray = ~year)
-    # )
-  
-  
-  p1
   return(out)
   
 })
@@ -532,8 +505,13 @@ Column {.tabset .tabset-fade data-width=650}
 renderPlotly({
   
   validate(
-    need(nrow(cntcrk()) > 0, 'No data...')
+    need(!is.null(selcrk), 'Select creek from map')
   )
+  
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+  
   cntcrkplo()
 
 })

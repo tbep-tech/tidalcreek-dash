@@ -73,3 +73,67 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
   return(out)
   
 }
+
+# bar plots of tidal creek context indicators
+show_tdlcrkindic <- function(selcrk, cntdat, yr){
+  
+  # data to plot
+  toplo <- cntdat %>% 
+    filter(id %in% selcrk) %>% 
+    mutate(year = factor(year, levels = seq(yr - 10, yr - 1))) %>% 
+    tidyr::complete(id, wbid, JEI, class, year, fill = list(CHLAC = 0, DO = 0, TN = 0, chla_tn_ratio = 0, tsi = 0))
+
+  if(nrow(toplo) == 0)
+    return()
+
+  p1 <- plot_ly(toplo, x = ~year, y = ~CHLAC, type = 'bar', text = ~round(CHLAC, 1), textposition = 'auto',
+                marker = list(color = '#00806E')
+                ) %>% 
+    layout(
+      yaxis = list(title = 'Chla (ug/L)'), 
+      xaxis = list(title = ''), 
+      showlegend = F
+    )
+  
+  p2 <- plot_ly(toplo, x = ~year, y = ~TN, type = 'bar', text = ~round(TN, 1), textposition = 'auto', 
+                marker = list(color = '#00806E')
+                ) %>%  
+    layout(
+      yaxis = list(title = 'TN (mg/L)'), 
+      xaxis = list(title = ''), 
+      showlegend = F
+    )
+  
+  p3 <- plot_ly(toplo, x = ~year, y = ~chla_tn_ratio, type = 'bar', text = ~round(chla_tn_ratio, 1), textposition = 'auto', 
+                marker = list(color = '#00806E')
+                ) %>% 
+    layout(
+      yaxis = list(title = 'Chla:TN'), 
+      xaxis = list(title = ''), 
+      showlegend = F
+    )
+  
+  p4 <- plot_ly(toplo, x = ~year, y = ~DO, type = 'bar', text = ~round(DO, 1), textposition = 'auto', 
+                marker = list(color = '#00806E')
+                ) %>%  
+    layout(
+      yaxis = list(title = 'DO (mg/L)'), 
+      xaxis = list(title = ''), 
+      showlegend = F
+    )
+  
+  p5 <- plot_ly(toplo, x = ~year, y = ~tsi, type = 'bar', text = ~round(tsi, 0), textposition = 'auto', 
+                marker = list(color = '#00806E')
+                ) %>%  
+    layout(
+      yaxis = list(title = 'Florida TSI'), 
+      xaxis = list(title = ''), 
+      showlegend = F
+    )
+  
+  out <- subplot(p1, p2, p3, p4, p5, shareX = T, titleY = T, nrows = 5)
+  
+  return(out)
+  
+  }
+
