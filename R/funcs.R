@@ -180,7 +180,7 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr){
         
         ecdffun <- ecdf(ecdfdat)
         plodat <- tibble(
-          val = seq(min(ecdfdat, na.rm = T), max(ecdfdat, na.rm = T), length.out = 100),
+          val = seq(min(ecdfdat, na.rm = T), max(ecdfdat, na.rm = T), length.out = 200),
           y = ecdffun(val)
         )
         
@@ -193,7 +193,7 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr){
           na.omit
 
         p <- plot_ly(type = 'scatter', colors = c(ptdat$color, 'black')) %>% 
-          add_trace(data = plodat, x = ~val,y = ~y, type = 'scatter', mode = 'lines', color = 'test', showlegend = F, hoverinfo = 'none', inherit = F) %>%
+          add_trace(data = plodat, x = ~val,y = ~y, type = 'scatter', mode = 'lines', color = 'test', showlegend = F, hoverinfo = 'y', inherit = F) %>%
           add_trace(data = ptdat, x = ~val, y = ~y, color = ~year, inherit = F, type = 'scatter', mode = 'markers', marker = list(size = 16, opacity = 0.8),
                     hoverinfo = 'text', text = ~year, showlegend = F) %>% 
           layout(
