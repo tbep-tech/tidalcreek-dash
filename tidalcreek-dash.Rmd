@@ -412,7 +412,7 @@ Similar to the [water quality report card](https://shiny.tbeptech.org/wq-dash/),
 
 Conceptually, these thresholds appear in the figure below.
 
-```{r, echo = F, out.width = '40%'}
+```{r, echo = F, out.width = '50%'}
 knitr::include_graphics('www/tidalcreekreport.PNG')
 ```
 
