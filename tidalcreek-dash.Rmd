@@ -41,7 +41,7 @@ yr <- 2018
 
 # join data to tidalcreeks sf
 tomap <- tidalcreeks %>%
-  dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>%
+  dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class', 'name')) %>%
   dplyr::mutate(
     score = factor(score, levels = c('No Data', 'Target', 'Caution', 'Investigate', 'Act'))
   )
