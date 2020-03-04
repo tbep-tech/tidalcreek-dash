@@ -22,6 +22,7 @@ library(sf)
 library(reactable)
 library(shinydashboard)
 library(plotly)
+library(shinyWidgets)
 
 # # style file
 # styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
@@ -509,6 +510,14 @@ leafletOutput('map')
 
 Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
+
+```{r}
+column(12, 
+       inputPanel(
+       materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?')
+       )
+       )
+```
 
 ### BAR PLOTS
 
