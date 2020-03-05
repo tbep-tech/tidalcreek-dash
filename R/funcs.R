@@ -74,11 +74,34 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
   
 }
 
+# add horizontal line to plotly
+# https://stackoverflow.com/questions/55170349/adding-a-horizontal-line-to-a-plotly-bar-graph
+hline <- function(y = 0, color = "black") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color, dash = 10)
+  )
+}
+
 # bar plots of tidal creek context indicators
 show_tdlcrkindic <- function(selcrk, cntdat, yr){
   
   labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI')
   names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi')
+  
+  # thresholds
+  thrs <- list(
+    CHLAC = 11, 
+    TN = 1.1, 
+    chla_tn_ratio = 15, 
+    DO = 2, 
+    tsi = c(50, 60) # lake, estuary
+  )
   
   pal_yrs <- leaflet::colorFactor(
     palette = c('#5C4A42', '#427355', '#004F7E'), #RColorBrewer::brewer.pal(8,  'Blues'),#c('#004F7E', '#00806E', '#427355', '#5C4A42', '#958984'),
@@ -102,7 +125,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr){
     layout(
       yaxis = list(title = labs['CHLAC']), 
       xaxis = list(title = ''), 
-      showlegend = F
+      showlegend = F, 
+      shapes = list(hline(thrs[['CHLAC']]))
     )
   
   p2 <- plot_ly(toplo, x = ~year, y = ~TN, type = 'bar', text = ~round(TN, 1), textposition = 'auto', 
@@ -111,7 +135,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr){
     layout(
       yaxis = list(title = labs['TN']), 
       xaxis = list(title = ''), 
-      showlegend = F
+      showlegend = F, 
+      shapes = list(hline(thrs[['TN']]))
     )
   
   p3 <- plot_ly(toplo, x = ~year, y = ~chla_tn_ratio, type = 'bar', text = ~round(chla_tn_ratio, 1), textposition = 'auto', 
@@ -120,7 +145,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr){
     layout(
       yaxis = list(title = labs['chla_tn_ratio']), 
       xaxis = list(title = ''), 
-      showlegend = F
+      showlegend = F, 
+      shapes = list(hline(thrs[['chla_tn_ratio']]))
     )
   
   p4 <- plot_ly(toplo, x = ~year, y = ~DO, type = 'bar', text = ~round(DO, 1), textposition = 'auto', 
@@ -138,7 +164,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr){
     layout(
       yaxis = list(title = labs['tsi']), 
       xaxis = list(title = ''), 
-      showlegend = F
+      showlegend = F, 
+      shapes = list(hline(thrs[['tsi']][1]),hline(thrs[['tsi']][2]))
     )
   
   out <- subplot(p1, p2, p3, p4, p5, shareX = T, titleY = T, nrows = 5)
