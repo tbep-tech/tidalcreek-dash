@@ -28,11 +28,12 @@ library(shinyWidgets)
 # styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
 # writeLines(styles, 'styles.css')
 
+data(bnds)
 data(tidres)
 data(tidalcreeks)
 
 # only show tb watershed
-tidalcreeks <- tidalcreeks[tbshed, ]
+tidalcreeks <- tidalcreeks[bnds, ]
 tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
 
 source('R/funcs.R')
