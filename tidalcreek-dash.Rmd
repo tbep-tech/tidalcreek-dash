@@ -85,7 +85,7 @@ edits <- reactive({
       # singleFeature = TRUE
     )
   
-  out <- callMfodule(editMod, 'editor', tomap)
+  out <- callModule(editMod, 'editor', tomap)
   
   return(out)
   
@@ -300,6 +300,28 @@ dwntab <- reactive({
                     showPageSizeOptions = T, compact = T
   )
   
+  return(out)
+  
+})
+
+# creek info from selection
+seltxt <- reactive({
+  
+  req(selcrk)
+
+  # data to plot
+  seldat <- tidres %>% 
+    filter(id %in% selcrk) %>% 
+    select(name, wbid, JEI) %>% 
+    mutate(
+      name = case_when(
+        name == '' ~ 'No name', 
+        T ~ name
+      )
+    )
+  
+  out <- paste0(seldat$name, ' (WBID: ', seldat$wbid, ', JEI: ', seldat$JEI, ')')
+  # browser()
   return(out)
   
 })
@@ -519,8 +541,9 @@ Column {.tabset .tabset-fade data-width=650}
 
 ```{r}
 column(12, 
-       inputPanel(
-       materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?')
+  inputPanel(
+    materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?'),
+    renderText(seltxt())
   )
 )
 ```
