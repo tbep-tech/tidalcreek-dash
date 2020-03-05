@@ -85,7 +85,7 @@ edits <- reactive({
       # singleFeature = TRUE
     )
   
-  out <- callModule(editMod, 'editor', tomap)
+  out <- callMfodule(editMod, 'editor', tomap)
   
   return(out)
   

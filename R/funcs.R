@@ -108,7 +108,7 @@ plyline <- function(var, thrsel = FALSE, horiz = T) {
           xref = "paper",
           y0 = ln[i], 
           y1 = ln[i], 
-          line = list(color = 'black', dash = 10)
+          line = list(color = 'red', dash = 10)
         ))
         
         out <- c(out, outi)
@@ -128,7 +128,7 @@ plyline <- function(var, thrsel = FALSE, horiz = T) {
           yref = "paper",
           y0 = 0, 
           y1 = 1, 
-          line = list(color = 'black', dash = 10)
+          line = list(color = 'red', dash = 10)
         ))
         
         out <- c(out, outi)
@@ -157,26 +157,38 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
     tsi = c(50, 60) # lake, estuary
   )
   
+  # annotations
+  anns <- list(
+    CHLAC = '', 
+    TN = '', 
+    chla_tn_ratio = '', 
+    DO = '', 
+    tsi = c('lake', 'estuary') # lake, estuary
+  )
+  
   # value to plot
-  ln <- thrs[[var]]
+  ln <- thrs[[varin]]
+  ann <- anns[[varin]]
   
   # create lines
   if(thrsel){
     
     out <- list()
-    
+
     # horizontal
     if(horiz){
       for(i in seq_along(ln)){
         
         outi <- list(list(
-          type = "line", 
-          x0 = 0, 
-          x1 = 1, 
-          xref = "paper",
-          y0 = ln[i], 
-          y1 = ln[i], 
-          line = list(color = 'black', dash = 10)
+          x = 0,
+          y = ln[i],
+          text = ann[i],
+          xref = "x",
+          yref = "y",
+          showarrow = F, 
+          yanchor = 'top', 
+          # xanchor = 'left',
+          font = list(color = 'red', size = 14)
         ))
         
         out <- c(out, outi)
@@ -190,13 +202,16 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
       for(i in seq_along(ln)){
         
         outi <- list(list(
-          type = "line", 
-          x0 = ln[i], 
-          x1 = ln[i], 
-          yref = "paper",
-          y0 = 0, 
-          y1 = 1, 
-          line = list(color = 'black', dash = 10)
+          x = ln[i],
+          y = 1,
+          text = ann[i],
+          xref = "x",
+          yref = "y",
+          showarrow = F, 
+          xanchor = 'right', 
+          yanchor = 'top',
+          textangle = 90,
+          font = list(color = 'red', size = 14)
         ))
         
         out <- c(out, outi)
@@ -210,8 +225,6 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
   return(out)
   
 }
-
-
 
 # bar plots of tidal creek context indicators
 show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
@@ -242,7 +255,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['CHLAC']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('CHLAC', thrsel = thrsel)
+      shapes = plyline('CHLAC', thrsel = thrsel), 
+      annotations = annline('CHLAC', thrsel = thrsel)
     )
   
   p2 <- plot_ly(toplo, x = ~year, y = ~TN, type = 'bar', text = ~round(TN, 1), textposition = 'auto', 
@@ -252,7 +266,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['TN']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('TN', thrsel = thrsel)
+      shapes = plyline('TN', thrsel = thrsel),
+      annotations = annline('TN', thrsel = thrsel)
     )
   
   p3 <- plot_ly(toplo, x = ~year, y = ~chla_tn_ratio, type = 'bar', text = ~round(chla_tn_ratio, 1), textposition = 'auto', 
@@ -262,7 +277,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['chla_tn_ratio']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('chla_tn_ratio', thrsel = thrsel)
+      shapes = plyline('chla_tn_ratio', thrsel = thrsel),
+      annotations = annline('chla_tn_ratio', thrsel = thrsel)
     )
   
   p4 <- plot_ly(toplo, x = ~year, y = ~DO, type = 'bar', text = ~round(DO, 1), textposition = 'auto', 
@@ -272,7 +288,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['DO']), 
       xaxis = list(title = ''), 
       showlegend = F,
-      shapes = plyline('DO', thrsel = thrsel)
+      shapes = plyline('DO', thrsel = thrsel),
+      annotations = annline('DO', thrsel = thrsel)
     )
   
   p5 <- plot_ly(toplo, x = ~year, y = ~tsi, type = 'bar', text = ~round(tsi, 0), textposition = 'auto', 
@@ -282,7 +299,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['tsi']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('tsi', thrsel = thrsel)
+      shapes = plyline('tsi', thrsel = thrsel),
+      annotations = annline('tsi', thrsel = thrsel)
     )
   
   out <- subplot(p1, p2, p3, p4, p5, shareX = T, titleY = T, nrows = 5)
@@ -299,16 +317,7 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr, thrsel = FALSE){
     filter(id %in% selcrk) %>% 
     mutate(year = factor(year, levels = seq(yr - 10, yr - 1))) %>% 
     tidyr::complete(id, wbid, JEI, class, year) 
-  
-  # annotations
-  anns <- list(
-    CHLAC = NULL, 
-    TN = NULL, 
-    chla_tn_ratio = NULL, 
-    DO = NULL, 
-    tsi = c('lake', 'estuary') # lake, estuary
-  )
-  
+
   if(nrow(seldat) == 0)
     return()
   
@@ -352,7 +361,8 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr, thrsel = FALSE){
           layout(
             yaxis = list(title = 'Percentiles', zeroline = T),
             xaxis = list(title = labs[var], zeroline = T),
-            shapes = plyline(var, thrsel = thrsel, horiz = F)
+            shapes = plyline(var, thrsel = thrsel, horiz = F),
+            annotations = annline(var, thrsel = thrsel, horiz = F)
           )
         
         return(p)
