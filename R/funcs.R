@@ -84,7 +84,8 @@ plyline <- function(var, thrsel = FALSE, horiz = T) {
     TN = 1.1, 
     chla_tn_ratio = 15, 
     DO = 2, 
-    tsi = c(50, 60) # lake, estuary
+    tsi = c(50, 60), # lake, estuary
+    no23_ratio = 1
   )
   
   # value to plot
@@ -154,7 +155,8 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
     TN = 1.1, 
     chla_tn_ratio = 15, 
     DO = 2, 
-    tsi = c(50, 60) # lake, estuary
+    tsi = c(50, 60), # lake, estuary
+    no23_ratio = 1
   )
   
   # annotations
@@ -163,7 +165,8 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
     TN = '', 
     chla_tn_ratio = '', 
     DO = '', 
-    tsi = c('lake', 'estuary') # lake, estuary
+    tsi = c('lake', 'estuary'), # lake, estuary
+    no23_ratio = ''
   )
   
   # value to plot
@@ -229,8 +232,8 @@ annline <- function(varin, thrsel = FALSE, horiz = T) {
 # bar plots of tidal creek context indicators
 show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
   
-  labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI')
-  names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi')
+  labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI', 'Nitrate ratio')
+  names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi', 'no23_ratio')
   
   pal_yrs <- leaflet::colorFactor(
     palette = c('#5C4A42', '#427355', '#004F7E'), #RColorBrewer::brewer.pal(8,  'Blues'),#c('#004F7E', '#00806E', '#427355', '#5C4A42', '#958984'),
@@ -242,7 +245,7 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
   toplo <- cntdat %>% 
     filter(id %in% selcrk) %>% 
     mutate(year = factor(year, levels = seq(yr - 10, yr - 1))) %>% 
-    tidyr::complete(id, wbid, JEI, class, year, fill = list(CHLAC = 0, DO = 0, TN = 0, chla_tn_ratio = 0, tsi = 0)) %>% 
+    tidyr::complete(id, wbid, JEI, class, year, fill = list(CHLAC = 0, DO = 0, TN = 0, chla_tn_ratio = 0, tsi = 0, no23_ratio = 0)) %>% 
     mutate(color = pal_yrs(year))
 
   if(nrow(toplo) == 0)
@@ -303,7 +306,18 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       annotations = annline('tsi', thrsel = thrsel)
     )
   
-  out <- subplot(p1, p2, p3, p4, p5, shareX = T, titleY = T, nrows = 5)
+  p6 <- plot_ly(toplo, x = ~year, y = ~no23_ratio, type = 'bar', text = ~round(no23_ratio, 2), textposition = 'auto',
+                marker = list(color = ~color), hoverinfo = 'x'
+                ) %>% 
+    layout(
+      yaxis = list(title = labs['no23_ratio'], rangemode = 'nonnegative'), 
+      xaxis = list(title = ''), 
+      showlegend = F, 
+      shapes = plyline('no23_ratio', thrsel = thrsel),
+      annotations = annline('no23_ratio', thrsel = thrsel)
+    )
+  
+  out <- subplot(p1, p2, p3, p4, p5, p6, shareX = T, titleY = T, nrows = 3)
   
   return(out)
   
@@ -329,8 +343,8 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr, thrsel = FALSE){
       cntdat = list(cntdat),
       plo = purrr::pmap(list(data, var, cntdat), function(data, var, cntdat){
 
-        labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI')
-        names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi')
+        labs <- c('Chla (ug/L)', 'TN (mg/L)', 'Chla:TN', 'DO (mg/L)', 'Florida TSI', 'Nitrate ratio')
+        names(labs) <- c('CHLAC', 'TN', 'chla_tn_ratio', 'DO', 'tsi', 'no23_ratio')
         
         pal_yrs <- leaflet::colorFactor(
           palette = c('#5C4A42', '#427355', '#004F7E'), #RColorBrewer::brewer.pal(8,  'Blues'),#c('#004F7E', '#00806E', '#427355', '#5C4A42', '#958984'),
@@ -375,8 +389,9 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr, thrsel = FALSE){
   p3 <- toplo$plo[[3]]
   p4 <- toplo$plo[[4]]
   p5 <- toplo$plo[[5]]
+  p6 <- toplo$plo[[6]]
   
-  out <- subplot(p1, p2, p3, p4, p5, nrows = 2, shareY = T, titleX = T, margin = c(0.02, 0.02, 0.06, 0.06))
+  out <- subplot(p1, p2, p3, p4, p5, p6, nrows = 2, shareY = T, titleX = T, margin = c(0.02, 0.02, 0.06, 0.06))
   
   return(out)
   

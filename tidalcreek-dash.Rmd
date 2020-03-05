@@ -50,7 +50,7 @@ tomap <- tidalcreeks %>%
 
 # context data
 cntdat <- anlz_tdlcrkindic(tidalcreeks, iwrraw, yr = yr) %>% 
-  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi)
+  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi, no23_ratio)
 
 downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
   tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
@@ -297,7 +297,7 @@ dwntab <- reactive({
                              list(background = colfun(value))
                            })
                     ), 
-                    filterable = T, pageSizeOptions = c(10, 20, nrow(mapsel)), defaultPageSize = 10,
+                    filterable = T, pageSizeOptions = c(10, 20, nrow(mapsel)), defaultPageSize = 20,
                     showPageSizeOptions = T, compact = T
   )
   
