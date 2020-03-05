@@ -307,9 +307,12 @@ dwntab <- reactive({
 # plot of context indicators for selected creek
 cntcrkplo <- reactive({
   
+  # inputs
+  thrsel <- input$thrsel
+  
   req(selcrk)
   
-  out <- show_tdlcrkindic(selcrk, cntdat, yr = yr)
+  out <- show_tdlcrkindic(selcrk, cntdat, yr = yr, thrsel = thrsel)
 
   return(out)
   
@@ -318,9 +321,12 @@ cntcrkplo <- reactive({
 # plot of ecdf context indicators for selected creek
 cntcrkcdf <- reactive({
   
+  # inputs
+  thrsel <- input$thrsel
+  
   req(selcrk)
   
-  out <- show_tdlcrkindiccdf(selcrk, cntdat, yr = yr)
+  out <- show_tdlcrkindiccdf(selcrk, cntdat, yr = yr, thrsel = thrsel)
 
   return(out)
   
@@ -515,8 +521,8 @@ Column {.tabset .tabset-fade data-width=650}
 column(12, 
        inputPanel(
        materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?')
-       )
-       )
+  )
+)
 ```
 
 ### BAR PLOTS
