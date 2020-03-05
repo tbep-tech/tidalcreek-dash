@@ -321,7 +321,7 @@ seltxt <- reactive({
     )
   
   out <- paste0(seldat$name, ' (WBID: ', seldat$wbid, ', JEI: ', seldat$JEI, ')')
-  # browser()
+  
   return(out)
   
 })
@@ -401,11 +401,22 @@ observeEvent(input$map_shape_click, {
 ```
 
 ```{r downloadhandlers}
-# data for observed species
-output$dldwntab <- downloadHandler(
-  filename = function(){'tidalcreek_sel.csv'},
+# data for creek pop selection
+output$cpdwntab <- downloadHandler(
+  filename = function(){'tidalcreek_pop.csv'},
   content = function(file){
     todl <- mapsel() 
+    write.csv(todl, file, quote = T, row.names = F)
+  }
+)
+
+# data for individual creek selection
+output$icdwntab <- downloadHandler(
+  filename = function(){'tidalcreek_sel.csv'},
+  content = function(file){
+    todl <- cntdat %>% 
+      filter(id %in% selcrk) %>% 
+      select(-id)
     write.csv(todl, file, quote = T, row.names = F)
   }
 )
@@ -520,7 +531,7 @@ fillCol(
 fillCol(
   flex = c(NA, 1),
   inputPanel(
-    downloadButtonRmd('dldwntab', 'Download table')
+    downloadButtonRmd('cpdwntab', 'Download table')
   ),
   renderReactable(dwntab())
 )
@@ -543,7 +554,11 @@ Column {.tabset .tabset-fade data-width=650}
 column(12, 
   inputPanel(
     materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?'),
-    renderText(seltxt())
+    renderText(seltxt()),
+    renderUI({
+      req(selcrk)
+      downloadButtonRmd('icdwntab', 'Download creek data')
+    })
   )
 )
 ```
