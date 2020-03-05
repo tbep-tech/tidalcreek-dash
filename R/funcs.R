@@ -198,7 +198,7 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
     layout(
       yaxis = list(title = labs['DO']), 
       xaxis = list(title = ''), 
-      showlegend = F,, 
+      showlegend = F,
       shapes = plyline(thrs[['DO']], thrsel = thrsel)
     )
   
