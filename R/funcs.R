@@ -74,152 +74,133 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
   
 }
 
-# add horizontal or vertical line to plotly
+# add horizontal or vertical line/annotation to plotly
 # https://stackoverflow.com/questions/55170349/adding-a-horizontal-line-to-a-plotly-bar-graph
-plyline <- function(var, thrsel = FALSE, horiz = T) {
-  
-  # thresholds
-  thrs <- list(
-    CHLAC = 11, 
-    TN = 1.1, 
-    chla_tn_ratio = 15, 
-    DO = 2, 
-    tsi = c(50, 60), # lake, estuary
-    no23_ratio = 1
-  )
-  
-  # value to plot
-  ln <- thrs[[var]]
+addline <- function(varin, thrsel = FALSE, horiz = TRUE, annotate = FALSE) {
   
   out <- NULL
-  
-  # create lines
+ 
+  # create lines or annotations
   if(thrsel){
+
+    # thresholds
+    thrs <- list(
+      CHLAC = 11, 
+      TN = 1.1, 
+      chla_tn_ratio = 15, 
+      DO = 2, 
+      tsi = c(50, 60), # lake, estuary
+      no23_ratio = 1
+    )
+    
+    # annotations
+    anns <- list(
+      CHLAC = '', 
+      TN = '', 
+      chla_tn_ratio = '', 
+      DO = '', 
+      tsi = c('lake', 'estuary'), # lake, estuary
+      no23_ratio = ''
+    )
+    
+    # value to plot
+    ln <- thrs[[varin]]
+    ann <- anns[[varin]]
     
     out <- list()
     
-    # horizontal
-    if(horiz){
-      for(i in seq_along(ln)){
-
-        outi <- list(list(
-          type = "line", 
-          x0 = 0, 
-          x1 = 1, 
-          xref = "paper",
-          y0 = ln[i], 
-          y1 = ln[i], 
-          line = list(color = 'red', dash = 10)
-        ))
-        
-        out <- c(out, outi)
+    # lines
+    if(!annotate){
+      
+      # horizontal
+      if(horiz){
+        for(i in seq_along(ln)){
+          
+          outi <- list(list(
+            type = "line", 
+            x0 = 0, 
+            x1 = 1, 
+            xref = "paper",
+            y0 = ln[i], 
+            y1 = ln[i], 
+            line = list(color = 'red', dash = 10)
+          ))
+          
+          out <- c(out, outi)
+          
+        }
         
       }
-
-    }
-    
-    # vertical
-    if(!horiz){
-      for(i in seq_along(ln)){
-        
-        outi <- list(list(
-          type = "line", 
-          x0 = ln[i], 
-          x1 = ln[i], 
-          yref = "paper",
-          y0 = 0, 
-          y1 = 1, 
-          line = list(color = 'red', dash = 10)
-        ))
-        
-        out <- c(out, outi)
+      
+      # vertical
+      if(!horiz){
+        for(i in seq_along(ln)){
+          
+          outi <- list(list(
+            type = "line", 
+            x0 = ln[i], 
+            x1 = ln[i], 
+            yref = "paper",
+            y0 = 0, 
+            y1 = 1, 
+            line = list(color = 'red', dash = 10)
+          ))
+          
+          out <- c(out, outi)
+          
+        }
         
       }
       
     }
     
-  }
+    # annotations
+    if(annotate){
       
-  return(out)
-
-}
-
-# add text annotations to horizontal or vertical line to plotly
-annline <- function(varin, thrsel = FALSE, horiz = T) {
-  
-  out <- NULL
-  
-  # thresholds
-  thrs <- list(
-    CHLAC = 11, 
-    TN = 1.1, 
-    chla_tn_ratio = 15, 
-    DO = 2, 
-    tsi = c(50, 60), # lake, estuary
-    no23_ratio = 1
-  )
-  
-  # annotations
-  anns <- list(
-    CHLAC = '', 
-    TN = '', 
-    chla_tn_ratio = '', 
-    DO = '', 
-    tsi = c('lake', 'estuary'), # lake, estuary
-    no23_ratio = ''
-  )
-  
-  # value to plot
-  ln <- thrs[[varin]]
-  ann <- anns[[varin]]
-  
-  # create lines
-  if(thrsel){
-    
-    out <- list()
-
-    # horizontal
-    if(horiz){
-      for(i in seq_along(ln)){
-        
-        outi <- list(list(
-          x = 0,
-          y = ln[i],
-          text = ann[i],
-          xref = "x",
-          yref = "y",
-          showarrow = F, 
-          yanchor = 'top', 
-          # xanchor = 'left',
-          font = list(color = 'red', size = 14)
-        ))
-        
-        out <- c(out, outi)
+      # horizontal
+      if(horiz){
+        for(i in seq_along(ln)){
+          
+          outi <- list(list(
+            x = 0,
+            y = ln[i],
+            text = ann[i],
+            xref = "x",
+            yref = "y",
+            showarrow = F, 
+            yanchor = 'top', 
+            # xanchor = 'left',
+            font = list(color = 'red', size = 14)
+          ))
+          
+          out <- c(out, outi)
+          
+        }
         
       }
       
-    }
-    
-    # vertical
-    if(!horiz){
-      for(i in seq_along(ln)){
+      # vertical
+      if(!horiz){
+        for(i in seq_along(ln)){
+          
+          outi <- list(list(
+            x = ln[i],
+            y = 1,
+            text = ann[i],
+            xref = "x",
+            yref = "y",
+            showarrow = F, 
+            xanchor = 'right', 
+            yanchor = 'top',
+            textangle = 90,
+            font = list(color = 'red', size = 14)
+          ))
+          
+          out <- c(out, outi)
+          
+        }
         
-        outi <- list(list(
-          x = ln[i],
-          y = 1,
-          text = ann[i],
-          xref = "x",
-          yref = "y",
-          showarrow = F, 
-          xanchor = 'right', 
-          yanchor = 'top',
-          textangle = 90,
-          font = list(color = 'red', size = 14)
-        ))
-        
-        out <- c(out, outi)
-        
-      }
+      }    
       
     }
     
@@ -258,8 +239,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['CHLAC']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('CHLAC', thrsel = thrsel), 
-      annotations = annline('CHLAC', thrsel = thrsel)
+      shapes = addline('CHLAC', thrsel = thrsel), 
+      annotations = addline('CHLAC', thrsel = thrsel, annotate = T)
     )
   
   p2 <- plot_ly(toplo, x = ~year, y = ~TN, type = 'bar', text = ~round(TN, 1), textposition = 'auto', 
@@ -269,8 +250,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['TN']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('TN', thrsel = thrsel),
-      annotations = annline('TN', thrsel = thrsel)
+      shapes = addline('TN', thrsel = thrsel),
+      annotations = addline('TN', thrsel = thrsel, annotate = T)
     )
   
   p3 <- plot_ly(toplo, x = ~year, y = ~chla_tn_ratio, type = 'bar', text = ~round(chla_tn_ratio, 1), textposition = 'auto', 
@@ -280,8 +261,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['chla_tn_ratio']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('chla_tn_ratio', thrsel = thrsel),
-      annotations = annline('chla_tn_ratio', thrsel = thrsel)
+      shapes = addline('chla_tn_ratio', thrsel = thrsel),
+      annotations = addline('chla_tn_ratio', thrsel = thrsel, annotate = T)
     )
   
   p4 <- plot_ly(toplo, x = ~year, y = ~DO, type = 'bar', text = ~round(DO, 1), textposition = 'auto', 
@@ -291,8 +272,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['DO']), 
       xaxis = list(title = ''), 
       showlegend = F,
-      shapes = plyline('DO', thrsel = thrsel),
-      annotations = annline('DO', thrsel = thrsel)
+      shapes = addline('DO', thrsel = thrsel),
+      annotations = addline('DO', thrsel = thrsel, annotate = T)
     )
   
   p5 <- plot_ly(toplo, x = ~year, y = ~tsi, type = 'bar', text = ~round(tsi, 0), textposition = 'auto', 
@@ -302,8 +283,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['tsi']), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('tsi', thrsel = thrsel),
-      annotations = annline('tsi', thrsel = thrsel)
+      shapes = addline('tsi', thrsel = thrsel),
+      annotations = addline('tsi', thrsel = thrsel, annotate = T)
     )
   
   p6 <- plot_ly(toplo, x = ~year, y = ~no23_ratio, type = 'bar', text = ~round(no23_ratio, 2), textposition = 'auto',
@@ -313,8 +294,8 @@ show_tdlcrkindic <- function(selcrk, cntdat, yr, thrsel = FALSE){
       yaxis = list(title = labs['no23_ratio'], rangemode = 'nonnegative'), 
       xaxis = list(title = ''), 
       showlegend = F, 
-      shapes = plyline('no23_ratio', thrsel = thrsel),
-      annotations = annline('no23_ratio', thrsel = thrsel)
+      shapes = addline('no23_ratio', thrsel = thrsel),
+      annotations = addline('no23_ratio', thrsel = thrsel, annotate = T)
     )
   
   out <- subplot(p1, p2, p3, p4, p5, p6, shareX = T, titleY = T, nrows = 3)
@@ -375,8 +356,8 @@ show_tdlcrkindiccdf <- function(selcrk, cntdat, yr, thrsel = FALSE){
           layout(
             yaxis = list(title = 'Percentiles', zeroline = T),
             xaxis = list(title = labs[var], zeroline = T),
-            shapes = plyline(var, thrsel = thrsel, horiz = F),
-            annotations = annline(var, thrsel = thrsel, horiz = F)
+            shapes = addline(var, thrsel = thrsel, horiz = F),
+            annotations = addline(var, thrsel = thrsel, horiz = F, annotate = T)
           )
         
         return(p)
