@@ -121,7 +121,7 @@ maptab <- reactive({
   
   # requires edits to continue  
   validate(
-    need(!is.null(edits()()$finished), 'Make selection from map')
+    need(!is.null(edits()()$finished), 'Make a selection from the map using the draw features')
   )
   
   # inputs
@@ -138,8 +138,8 @@ maptab <- reactive({
                             aggregate = 'sum', 
                             format = colFormat(digits = 2),
                             cell = function(value) {
-                              
-                              width <- paste0(value / max(mapsel$`Length (km)`) * 100, "%")
+             
+                              width <- paste0(value / max(mapsel$`Length (km)`, na.rm = T) * 100, "%")
                               value <- format(value, width = 9, justify = "right")
 
                               bar <- div(
@@ -268,7 +268,7 @@ sumtxt <- reactive({
     paste('streams')
   
   if(sumsel == 'by creek length')
-    tot <- sum(mapsel$`Length (km)`) %>% 
+    tot <- sum(mapsel$`Length (km)`, na.rm = T) %>% 
       round(1) %>% 
       paste('km')
     
@@ -283,7 +283,7 @@ dwntab <- reactive({
   
   # requires edits to continue  
   validate(
-    need(!is.null(edits()()$finished), 'Make selection from map')
+    need(!is.null(edits()()$finished), 'Make a selection from the map using the draw features')
   )
   
   # inputs
@@ -445,11 +445,11 @@ Similar to the [water quality report card](https://shiny.tbeptech.org/wq-dash/),
 
 <span style="color:#33FF3B; text-shadow: 0 0 3px #333;">__Target__</span>: Creek is at or below nitrogen concentrations that protect individual creek types within the larger population of creeks.
 
-<span style="color:#F9FF33; text-shadow: 0 0 3px #333;">__Caution__</span>: Creek nutrients showing signs of eleveted nutrient concentrations that may increase risk of eutrophic condition.
+<span style="color:#F9FF33; text-shadow: 0 0 3px #333;">__Caution__</span>: Creek nutrients showing signs of elevated nutrient concentrations that may increase risk of eutrophic condition.
 
-<span style="color:#FFA500; text-shadow: 0 0 3px #333;">__Investigate__</span>: Creek nutrient concentrations above margin of safety to protect creek from potnetial impairment.  
+<span style="color:#FFA500; text-shadow: 0 0 3px #333;">__Investigate__</span>: Creek nutrient concentrations above margin of safety to protect creek from potential impairment.  
 
-<span style="color:#FF7F50; text-shadow: 0 0 3px #333;">__Act__</span>: Creek nutrient concentrations have exceeded regulatory standard for assocaited freshwater portion of tributary indicating that actions are needed to identify remediative measures to reduce nutrients to the creek.
+<span style="color:#FF7F50; text-shadow: 0 0 3px #333;">__Act__</span>: Creek nutrient concentrations have exceeded regulatory standard for associated freshwater portion of tributary indicating that actions are needed to identify remediative measures to reduce nutrients to the creek.
 
 Conceptually, these thresholds appear in the figure below.
 
@@ -457,7 +457,7 @@ Conceptually, these thresholds appear in the figure below.
 knitr::include_graphics('www/tidalcreekreport.PNG')
 ```
 
-The Act category was defined based on Florida's freshwater stream numeric nutrient criteria (NNC).Two different freshwater stream NNC are applciable to our region; the West Central NNC of 1.65 mg/l and  Peninsular region NNC of 1.54 mg/l. The histograms in the above figure represents a range of annual geometric mean (AGM) nitrogen concentrations associated with the Act and Investigate categories which are based on the NNC. In the example above, the maximum expected distribution of AGMs not to exceed of 1.65 mg/l with a 1:3 exceedence probability as defined in F.A.C. 62-303 was generated using monte carlo simulation and the highest observed standard deviation from data collected during  the first creeks study. The Investigate category was then defined as an explicit margin of safety by adjusting the distribution to find the grand geometric average that would result in a 1:20 chance of exceeding 1.65 mg/l. Assignment of a creek into the Caution category depended on a creek length adjustment as described below to protect smaller creeks from elevated nutrient concentrations.  
+The Act category was defined based on Florida's freshwater stream numeric nutrient criteria (NNC).Two different freshwater stream NNC are applicable to our region; the West Central NNC of 1.65 mg/l and  Peninsular region NNC of 1.54 mg/l. The histograms in the above figure represents a range of annual geometric mean (AGM) nitrogen concentrations associated with the Act and Investigate categories which are based on the NNC. In the example above, the maximum expected distribution of AGMs not to exceed of 1.65 mg/l with a 1:3 exceedance probability as defined in F.A.C. 62-303 was generated using monte carlo simulation and the highest observed standard deviation from data collected during  the first creeks study. The Investigate category was then defined as an explicit margin of safety by adjusting the distribution to find the grand geometric average that would result in a 1:20 chance of exceeding 1.65 mg/l. Assignment of a creek into the Caution category depended on a creek length adjustment as described below to protect smaller creeks from elevated nutrient concentrations.  
 
 Note that the "Caution" category is a function of creek length. 
 
@@ -474,7 +474,7 @@ knitr::kable(totab)
 
 A temporal component is also included in the assessment, whereby the overall score considers the individual categories that were observed in the previous ten years for the period of record.  For this analysis, the tidal creek assessments include data from 2008 to 2018 coinciding with the ten years prior from the most current year in the IWR period of record.  Each year of data in which nitrogen was measured at a site is given a score based on the categories defined above and an overall score is based on a frequency count for each category over the 10 year period.  The overall scores are typically assigned conservatively, such that the overall score is based on the highest category that is exceeded.  For example, a creek is assigned to the "Act" (red) category if only two of ten years exceeds the Act threshold, even if the remaining years are at target concentrations. Therefore, the framework can be considered a risk characterization representing the risk of the creek exceeding a particular threshold level.  
 
-Finally, it is important to note that the framework outcomes do not carry any regulatory authority and are not intended to supercede any State or Federal regulatory standards currently in place, including aquatic life criteria used to evaluate waterbody impairments or pollutant load reduction goals associated with existing or forthcoming total maximum daily loads (TMDLs). The nutrient management framework was developed to serve as a screening tool to identify creeks with elevated nutrient concentrations for further evaluation to protect their in stream ecology but is not designed to explicitly identify regulatory impairments (or lack thereof) or the needs of downstream waterbodies such as larger estuarine waters that may be in need of nutrient load reductions.
+Finally, it is important to note that the framework outcomes do not carry any regulatory authority and are not intended to supersede any State or Federal regulatory standards currently in place, including aquatic life criteria used to evaluate waterbody impairments or pollutant load reduction goals associated with existing or forthcoming total maximum daily loads (TMDLs). The nutrient management framework was developed to serve as a screening tool to identify creeks with elevated nutrient concentrations for further evaluation to protect their in stream ecology but is not designed to explicitly identify regulatory impairments (or lack thereof) or the needs of downstream waterbodies such as larger estuarine waters that may be in need of nutrient load reductions.
 
 All site content created by [Marcus Beck](mbeck@tbep.org), with technical support from [Mike Wessel](mwessel@janickienvironmental.com).  The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash).
 
@@ -540,6 +540,40 @@ fillCol(
 
 ### INTERPRETATION
 
+The SUMMARY ASSESSMENTS tab provides an overview of the distribution of creeks that are assigned to each score category.  Begin by using the draw features on the map to select an area of interest.  The tables and gauges under the MAP SELECTION and DOWNLOAD tabs will populate only after a selection is made. 
+
+The draw area can be a custom polygon or a rectangle.  Begin by clicking on one of the icons on the map (example shown below) and clicking locations on the map to create the boundaries. Click the "Finish" button when the selection is done, modify points with "Delete last point", and "Cancel" to start over: 
+
+<br>
+<img src="www/mapdraw.PNG" height="100%" width="200">
+<br>
+
+In the below example, a custom polygon was drawn over creeks that drain into Tampa Bay. 
+
+<br>
+<img src="www/mapdraw2.PNG" height="100%" width="400">
+<br>
+
+The MAP SELECTION tab shows a table that summarizes the number of creeks in each score category for the selection from the map.  The table is grouped by each category with the total number of creeks shows in parentheses.  In the current selection, there are 4 creeks in the "Caution" category, 8 in "Investigate", 12 in "Act", 49 in "Target", and 113 with "No Data".  The total creek length in each category is shown in the "Length (km)" column (e.g., there are 368 km of creeks in the "Target" category).  The remaining columns ("target", "caution", "investigate", "act") are counts of the number of years in the previous ten years that creeks were categorized accordingly.  The distribution of the counts in these categories define the overall creek score (e.g., if a creek has more years in the act category, it will likely be assigned an overall score of "Act"). The unexpanded table should look like this: 
+
+<br>
+<img src="www/selex1.PNG" height="100%" width="1000">
+<br>
+
+The categories in the table can be expanded by clicking on a row.  The expanded rows show data for the individual creeks that are assigned to each category.  The bar plots for the length column indicate relative lengths of each creek.  The expanded table should look like this (only the "Investigate" and "Act" categories are shown):  
+
+<br>
+<img src="www/selex2.PNG" height="100%" width="1000">
+<br>
+
+The gauges on the bottom of the MAP SELECTION tab provide additional summaries of the distribution of creeks by category for the selection.  Summaries can show a percentage of creeks in each category, the  number of creeks in each category, percentages of the total creek length in each category, and the total creek length as a sum in each category.  In the example selection, there are 734 km of creeks with "No Data", 368 km in the "Target" category, 15 km in the "Caution" category, 65 km in the "Investigate" category, and 78 km in the "Act" category. 
+
+<br>
+<img src="www/selex3.PNG" height="100%" width="1000">
+<br>
+
+The DOWNLOAD tab provides the same information as the previous tab, except that the creeks are not grouped by score category.  The "Download table" button can be clicked to download the summary data for the current map selection. 
+
 INDIVIDUAL CREEKS
 ===========================================================
 
@@ -572,7 +606,7 @@ column(12,
 renderPlotly({
   
   validate(
-    need(!is.null(selcrk), 'Select creek from map')
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
   )
   
   validate(
@@ -590,7 +624,7 @@ renderPlotly({
 renderPlotly({
   
   validate(
-    need(!is.null(selcrk), 'Select creek from map')
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
   )
   
   validate(
@@ -624,9 +658,9 @@ The RELATIVE VALUES tab shows similar information except that empirical cumulati
 <img src="www/cdfplotex.png" height="100%" width="600">
 <br>
 
-In the above figure, the values for the selected creek are overlaid on the CDF curve. Compared to the rest of the creeks in the dataset, the TSI values for the selcted creek are relatively lower (less than the 25th percentile).  
+In the above figure, the values for the selected creek are overlaid on the CDF curve. Compared to the rest of the creeks in the dataset, the TSI values for the selected creek are relatively lower (less than the 25th percentile).  
 
-Finally, the controls at the top can be used to toggle the threshold lines, view information about the selected creek, and download the data for the context indcators for the selected creek. 
+Finally, the controls at the top can be used to toggle the threshold lines, view information about the selected creek, and download the data for the context indicators for the selected creek. 
 
 <br>
 <img src="www/selcreekcontrols.png" height="100%" width="500">
