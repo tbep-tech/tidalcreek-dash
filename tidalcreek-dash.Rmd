@@ -429,7 +429,7 @@ OVERVIEW
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### WELCOME TO THE TIDAL CREEK ASSESSMENT DASHBOARD!
+### WELCOME TO THE TIDAL CREEK ASSESSMENT DASHBOARD [v1.0](https://github.com/tbep-tech/tidalcreek-dash/releases/tag/v1.0)!
 
 #### Using the dashboard
 
