@@ -474,6 +474,12 @@ knitr::kable(totab)
 
 A temporal component is also included in the assessment, whereby the overall score considers the individual categories that were observed in the previous ten years for the period of record.  For this analysis, the tidal creek assessments include data from 2008 to 2018 coinciding with the ten years prior from the most current year in the IWR period of record.  Each year of data in which nitrogen was measured at a site is given a score based on the categories defined above and an overall score is based on a frequency count for each category over the 10 year period.  The overall scores are typically assigned conservatively, such that the overall score is based on the highest category that is exceeded.  For example, a creek is assigned to the "Act" (red) category if only two of ten years exceeds the Act threshold, even if the remaining years are at target concentrations. Therefore, the framework can be considered a risk characterization representing the risk of the creek exceeding a particular threshold level.  
 
+A workflow showing how the scores are calculated on two hypothetical water body id (WBID) locations for the same creek (JEI) is shown below:
+
+```{r, echo = F, out.width = '75%'}
+knitr::include_graphics('www/tidalcreekschematic.png')
+```
+
 Finally, it is important to note that the framework outcomes do not carry any regulatory authority and are not intended to supersede any State or Federal regulatory standards currently in place, including aquatic life criteria used to evaluate waterbody impairments or pollutant load reduction goals associated with existing or forthcoming total maximum daily loads (TMDLs). The nutrient management framework was developed to serve as a screening tool to identify creeks with elevated nutrient concentrations for further evaluation to protect their in stream ecology but is not designed to explicitly identify regulatory impairments (or lack thereof) or the needs of downstream waterbodies such as larger estuarine waters that may be in need of nutrient load reductions.
 
 All site content created by [Marcus Beck](mbeck@tbep.org), with technical support from [Mike Wessel](mwessel@janickienvironmental.com).  The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash).
