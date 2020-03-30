@@ -102,6 +102,24 @@ h5 {
   color: #958984;
 }
 
+.control-label {
+  font-family: 'Lato';
+  font-weight: 300;
+  color: #958984;
+}
+
+.shiny-text-output {
+  font-family: 'Lato';
+  font-weight: 300;
+  color: #958984;
+}
+
+.material-switch {
+  font-family: 'Lato';
+  font-weight: 300;
+  color: #958984;
+}
+
 
 /* shiny slider stuff */
 
@@ -144,4 +162,21 @@ h5 {
 }
 .bar {
   height: 100%;
+}
+
+/* leaflet */
+
+.leaflet-control { /* leaflet legends, control boxes */
+  font-family: 'Lato';
+  font-weight: 300;
+  color: #958984;
+}
+
+/* figure captions */
+
+.caption {
+  font-family: 'Lato';
+  font-weight: 300;
+  color: #958984;
+  font-style: italic;
 }
