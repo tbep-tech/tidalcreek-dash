@@ -438,6 +438,38 @@ Column {data-width=650}
 <div class = "col-md-2"></div>
 <div class = "col-md-8">
 
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+knitr::include_graphics('www/bannerimage.png')
+```
+
+The objective of the tidal creek dashboard is to provide a screening level assessment of tidal creek water quality using a "Report Card" type scoring system and calculations of site specific indicators of creek condition.
+
+The __DETAILS__ page provides an explanation of the methodology for generating the Report Card outcomes.
+
+The __SUMMARY ASSESSMENTS__ page provides a way to summarize report card outcomes(map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explanains the use and interpretation of the summary assessments tool.  
+
+The __INDIVIDUAL CREEKS__ page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
+
+All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://tbeptech.org/TBEP_TECH_PUBS/2016/TBEP_02_16_SW_FL_Tidal_Creeks_Final_Draft_Report_160121.pdf) and [2019](https://tbeptech.org/TBEP_TECH_PUBS/2019/TBEP_13_19_2019_Tidal_Creeks_Final_Report.pdf) reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/), Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash).
+
+[![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629)
+
+</div>
+<div class = "col-md-2"></div>
+</div>
+
+DETAILS
+===========================================================
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### WELCOME TO THE TIDAL CREEK ASSESSMENT DASHBOARD [v1.0](https://github.com/tbep-tech/tidalcreek-dash/releases/tag/v1.0)!
+
+<div class = "row">
+<div class = "col-md-2"></div>
+<div class = "col-md-8">
+
 #### Using the dashboard
 
 Tidal creeks or tributaries are essential habitats in the Tampa Bay Estuary and serve as important focal points for understanding watershed inputs that affect water quality. A fundamental goal of the Tampa Bay Estuary Program is to develop effective nutrient management strategies to support the ecological function of tidal tributaries. In partnership with Sarasota Bay NEP, Coastal & Heartland NEP, Mote Marine Laboratory, and local government and agency stakeholders, preliminary methods have been developed for assessing the health of tidal tributaries for fisheries based on exceedances of nitrogen concentrations ([2016 report](https://tbeptech.org/TBEP_TECH_PUBS/2016/TBEP_02_16_SW_FL_Tidal_Creeks_Final_Draft_Report_160121.pdf), [2019 report](https://tbeptech.org/TBEP_TECH_PUBS/2019/TBEP_13_19_2019_Tidal_Creeks_Final_Report.pdf)). These assessments can support tracking of water quality management goals and can help refine restoration and management plans in priority tributaries, including those in need of hydrologic restoration that can support critical nursery habitats for sportfishes.
@@ -657,7 +689,16 @@ renderPlotly({
 
 ### USE AND INTERPRETATION
 
-Several years of data included in the IWR database are used to estimate the summary assessment categories. Additional water quality parameters in this database can provide context for interpreting the outcomes, e.g., chlorophyll, nitrogen, dissolved oxygen, etc. These data are summarized for individual creeks in the BAR PLOTS and RELATIVE VALUES tabs.  Each plot shows the annual geometric means of additional water quality measurements for the ten years of data that were used to define the score categories in the SUMMARY ASSESSMENTS. Averages for each year of available data at each wbid/JEI combination are returned for chlorophyll, dissolved oxygen, total nitrogen, total phosphorus, trophic state index, and several other parameters.
+Several years of data included in the IWR database are used to estimate the summary assessment categories. Additional water quality parameters in this database can provide context for interpreting the outcomes.  For the dashboard, these variables include:
+
+1. __Chlorophyll-a (ug/L)__: A measure of chlorophyll concentration in the water column, often indicative of system productivity
+1. __Total Nitrogen (mg/L)__: The total concentration of nitrogen in the water column, indicates the amount of inorganic nutrients available for primary producers
+1. __Chlorophyll-a to Total Nitrogen ratio__: A ratio between the two that can indicate how much nutrients are available or have already been used by primary producers
+1. __Dissolved Oxygen (mg/L)__: The concentration of dissolved oxygen in the water column, low values indicate metabolic or microbial processes that consume oxygen are degrading aquatic habitat
+1. __Florida Trophic State Index (TSI)__: A composite index ranging from 0 - 100 that jointly considers chlorophyll and nutrients with higher values indicating more eutrophic conditions, described in [Paulic et al. 1996](http://www.hillsborough.wateratlas.usf.edu/upload/documents/1996%20Water-Quality%20Assessment%20for%20the%20State%20of%20Florida%20Section%20305(b)%20Main%20Report.pdf)
+1. __Nitrate ratio__: Ratio of inorganic nitrate concentrations between source (upstream/freshwater) and tidal portions of a creek.  Values greater than one indicate the upstream portion is a source of nitrate.
+
+Indicator data are summarized for individual creeks in the BAR PLOTS and RELATIVE VALUES tabs.  Each plot shows the annual geometric means of additional water quality measurements for the ten years of data that were used to define the score categories in the SUMMARY ASSESSMENTS. Averages for each year of available data at each wbid/JEI combination are returned for each indicator and threshold lines can be shown on each plot that indicate values above or below (depending on the indicator) at which water quality conditions may be degraded.  
 
 The BAR PLOTS are annual averages for the six context indicators at the selected creek.  These plots can be used to assess:
 
