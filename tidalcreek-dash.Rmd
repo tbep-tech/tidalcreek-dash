@@ -446,7 +446,7 @@ The objective of the tidal creek dashboard is to provide a screening level asses
 
 The __DETAILS__ page provides an explanation of the methodology for generating the Report Card outcomes.
 
-The __SUMMARY ASSESSMENTS__ page provides a way to summarize report card outcomes(map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explanains the use and interpretation of the summary assessments tool.  
+The __SUMMARY ASSESSMENTS__ page provides a way to summarize report card outcomes(map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explains the use and interpretation of the summary assessments tool.  
 
 The __INDIVIDUAL CREEKS__ page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
 
