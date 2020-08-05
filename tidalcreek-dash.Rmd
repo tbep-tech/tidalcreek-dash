@@ -32,6 +32,9 @@ data(bnds)
 data(tidres)
 data(tidalcreeks)
 
+st_crs(bnds) <- 4326
+st_crs(tidalcreeks) <- 4326
+
 # only show tb watershed
 tidalcreeks <- tidalcreeks[bnds, ]
 tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
