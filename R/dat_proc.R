@@ -15,6 +15,6 @@ load(file = '../anep-congressional/data/anep.RData')
 
 # tbep and sbep
 bnds <- anep %>% 
-  filter(nep %in% c('Sarasota Bay Estuary Program', 'Tampa Bay Estuary Program'))
+  filter(nep %in% c('Sarasota Bay Estuary Program', 'Tampa Bay Estuary Program', 'Charlotte Harbor National Estuary Program'))
 
 save(bnds, file = here::here('data', 'bnds.RData'), compress = 'xz')
