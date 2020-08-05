@@ -1,0 +1,49 @@
+---
+output: 
+  bookdown::word_document2
+---
+  
+```{r setup, echo = F, warning = F, message = F, results = 'hide'}
+# libraries
+library(tidyverse)
+library(flextable)
+library(officer)
+library(readxl)
+
+dat <- read_excel('~/Desktop/TBEP/tidal creeks/Creek stats reduced.xlsx') %>% 
+  gather('var', 'val', -creek, -cat, -Count) %>% 
+  mutate(
+    var = case_when(
+      !grepl('^min|^max', var) ~ paste0('ave_', var), 
+      T ~ var
+    ), 
+    var = gsub('\\_ugl$|\\_mgl$', '', var),
+    val = round(val, 1), 
+    cat = factor(cat, levels = c('Salt', 'Fresh'), labels = c('T', 'F'))
+  ) %>% 
+  separate(var, c('stat', 'var'), sep = '_') %>% 
+  spread(stat, val) %>% 
+  mutate(
+    min = paste0('(', min, ','), 
+    max = paste0(max, ')'), 
+    var = factor(var, levels = c('tn', 'tp', 'chlac', 'salinity', 'dissolvedo2'), labels = c('TN (mg/L)', 'TP (mg/L', 'Chl-a (ug/L)', 'Salinity (psu)', 'DO (mg/L)'))
+  ) %>% 
+  unite('stat', ave, min, max, sep = ' ') %>% 
+  spread(var, stat) %>% 
+  mutate(creek = ifelse(duplicated(creek), '', creek)) %>% 
+  rename(
+    Creek = creek, 
+    Portion = cat
+  )
+```
+
+```{r sumtab, tab.cap = 'Descriptive statistics for principal water quality constituents collected in 16 southwest Florida tidal creeks sampled between November 2013 and December 2017. Values shown are averages with minimum and maximum in parentheses. Portion describes the tidal (T) or freshwater (F) sections of each creek.', echo = F}
+flextable(dat) %>%  
+  border_remove() %>% 
+  hline_top(border = fp_border(color = 'black')) %>% 
+  font(fontname = 'Times', part = 'all') %>%
+  fontsize(size = 8, part = 'all') %>% 
+  width(j = 1, width = 0.8) %>% 
+  width(j = c(2, 3), width = 0.5) %>% 
+  width(j = c(4, 5, 6, 7, 8), width = 0.9)
+```
