@@ -44,13 +44,6 @@ source('R/funcs.R')
 # iwr ref year
 yr <- 2018
 
-# join data to tidalcreeks sf
-tomap <- tidalcreeks %>%
-  dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class', 'name')) %>%
-  dplyr::mutate(
-    score = factor(score, levels = c('No Data', 'Monitor', 'Caution', 'Investigate', 'Prioritize'))
-  )
-
 # context data
 cntdat <- anlz_tdlcrkindic(tidalcreeks, iwrraw, yr = yr) %>% 
   select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi, no23_ratio)
@@ -69,7 +62,14 @@ downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...) 
 # overview map
 allmap <- reactive({
   
-  out <- show_tdlcrk(tidres)
+  # input
+  clssel1 <- input$clssel1
+  
+  req(clssel1)
+  
+  out <- tidres %>% 
+    filter(grepl(clssel1, class)) %>% 
+    show_tdlcrk
   
   return(out)
   
@@ -103,6 +103,7 @@ mapsel <- reactive({
 
   # input
   edits <- edits()()
+  clssel1 <- input$clssel1
   
   # requires edits to continue  
   req(!is.null(edits$finished))
@@ -113,8 +114,9 @@ mapsel <- reactive({
     st_intersection(tidalcreeks, .) %>% 
     st_set_geometry(NULL) %>% 
     inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class')) %>% 
+    filter(grepl(clssel1, class)) %>% 
     mutate(`Length (km)` = round(Creek_Length_m / 1000, 2)) %>% 
-    select(wbid, JEI, `Length (km)`, monitor, caution, investigate, prioritize, score)
+    select(wbid, JEI, Class = class, `Length (km)`, monitor, caution, investigate, prioritize, score)
   
   req(nrow(out) > 0)
   
@@ -311,6 +313,23 @@ dwntab <- reactive({
   
 })
 
+# polyline selection base map
+tomap <- reactive({
+  
+  # input
+  clssel2 <- input$clssel2
+  
+  out <- tidalcreeks %>%
+    dplyr::inner_join(tidres, by = c('id', 'wbid', 'JEI', 'class', 'name')) %>%
+    filter(grepl(clssel2, class)) %>% 
+    dplyr::mutate(
+      score = factor(score, levels = c('No Data', 'Monitor', 'Caution', 'Investigate', 'Prioritize'))
+    )
+  
+  return(out)
+
+})
+
 # creek info from selection
 seltxt <- reactive({
   
@@ -360,14 +379,17 @@ cntcrkcdf <- reactive({
   return(out)
   
 })
-
 ```
 
 ```{r map}
 # polyline selection
 output$map <- renderLeaflet({
   
-  out <- show_tdlcrk(tidres)
+  # input
+  clssel2 <- input$clssel2
+  out <- tidres %>% 
+    filter(grepl(clssel2, class)) %>% 
+    show_tdlcrk
   
   return(out)
   
@@ -385,6 +407,9 @@ observeEvent(input$map_shape_click, {
 })
 
 observeEvent(input$map_shape_click, {
+  
+  # input
+  tomap <- tomap()
   
   # filter spatial data by selection
   selcrkln <- tidalcreeks %>% 
@@ -553,6 +578,14 @@ editModUI('editor')
 Column {.tabset .tabset-fade data-width=650}
 -----------------------------------------------------------------------
 
+```{r}
+column(12, 
+  inputPanel(
+    selectInput(inputId = 'clssel1', label = 'Toggle creek type?', choices = list('All' = '^3M$|^3F$|^2$|^1$', `Tidal (class 3M, 2)` = '^3M$|^2$', `Fresh (class 3F, 1)` = '^3F$|^1$'), selected = 'All')
+  )
+)
+```
+
 ### MAP SELECTION
 
 ```{r allmap}
@@ -644,6 +677,7 @@ Column {.tabset .tabset-fade data-width=650}
 ```{r}
 column(12, 
   inputPanel(
+    selectInput(inputId = 'clssel2', label = 'Toggle creek type?', choices = list('All' = '^3M$|^3F$|^2$|^1$', `Tidal (class 3M, 2)` = '^3M$|^2$', `Fresh (class 3F, 1)` = '^3F$|^1$'), selected = 'All'),
     materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?'),
     renderText(seltxt()),
     renderUI({

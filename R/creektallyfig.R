@@ -2,6 +2,10 @@
 
 library(patchwork)
 library(tidyverse)
+library(tbeptools)
+library(extrafont)
+
+fml <- 'Lato'
 
 data(tidres)
 toplo2 <- tidres %>% 
@@ -17,7 +21,7 @@ toplo2 <- tidres %>%
   unite('id', wbid, name, sep = ', ') %>% 
   mutate(
     score = factor(score, 
-                   levels = rev(c('Act', 'Investigate', 'Caution', 'Target')), 
+                   levels = rev(c('Prioritize', 'Investigate', 'Caution', 'Monitor')), 
                    labels = rev(c('Prioritize', 'Investigate', 'Caution', 'Monitor'))
     )
   ) %>% 
@@ -28,13 +32,13 @@ toplo2 <- tidres %>%
   )
 
 toplo1 <- toplo2 %>% 
-  gather('indyr', 'count', target, caution, investigate, act) %>% 
+  gather('indyr', 'count', monitor, caution, investigate, prioritize) %>% 
   mutate(
     count = case_when(
       is.na(count) ~ 0L, 
       T ~ count
     ), 
-    indyr = factor(indyr, levels = rev(c('act', 'investigate', 'caution', 'target')), labels = rev(c('Prioritize', 'Investigate', 'Caution', 'Monitor')))
+    indyr = factor(indyr, levels = rev(c('prioritize', 'investigate', 'caution', 'monitor')), labels = rev(c('Prioritize', 'Investigate', 'Caution', 'Monitor')))
   )
 
 pthm <- theme(
