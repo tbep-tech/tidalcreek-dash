@@ -387,9 +387,14 @@ output$map <- renderLeaflet({
   
   # input
   clssel2 <- input$clssel2
+  tomap <- tomap()
+  
   out <- tidres %>% 
     filter(grepl(clssel2, class)) %>% 
-    show_tdlcrk
+    show_tdlcrk %>% 
+    leaflet::addPolylines(data = tomap, opacity = 0, weight = 12,
+              layerId = ~id, label = ~paste0("WBID: ", wbid, ", JEI: ", JEI, ', Name: ', name, ', Creek score: ', score)
+    )
   
   return(out)
   
@@ -425,7 +430,8 @@ observeEvent(input$map_shape_click, {
               title = "Creek scores",
               opacity = 1
     ) %>%
-    leaflet::addPolylines(data = tomap, opacity = 1, weight = 1.5, color = ~pal_exp(score),
+    leaflet::addPolylines(data = tomap, opacity = 1, weight = 1.5, color = ~pal_exp(score)) %>% 
+    leaflet::addPolylines(data = tomap, opacity = 0, weight = 12,
               layerId = ~id, label = ~paste0("WBID: ", wbid, ", JEI: ", JEI, ', Name: ', name, ', Creek score: ', score)
     )
 
