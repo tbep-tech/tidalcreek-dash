@@ -46,7 +46,7 @@ yr <- 2018
 
 # context data
 cntdat <- anlz_tdlcrkindic(tidalcreeks, iwrraw, yr = yr) %>% 
-  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi, no23_ratio)
+  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi, no23_source, no23_tidal, no23_ratio)
 
 # color ramp for indicator plots
 pal <- RColorBrewer::brewer.pal(8,  'Blues')
