@@ -66,14 +66,15 @@ toplo1b <- datagm %>%
 p1a <- ggplot(toplo1a, aes(x = date, y = result)) +
   geom_line() +
   geom_point() +
-  scale_y_log10(limits = ylms1) +
-  # labs(
-  #   y = 'Total nitrogen (mg/L),
-  #   subtitle = 'Observed'
-  # ) +
-  theme_void() +
+  # scale_y_log10() +
+  labs(
+    y = 'Total nitrogen (mg/L)'
+  ) +
+  theme_minimal() +
   theme(
     axis.title.x = element_blank(),
+    axis.ticks.x = element_line(),
+    axis.ticks.y = element_line(),
     text = element_text(family = fml),
     panel.grid = element_blank()
     )
@@ -140,15 +141,15 @@ p2b <- ggplot(toplo2b, aes(x = factor(year), y = result)) +
     panel.grid = element_blank()
   )
 
-png('C:/Users/Marcus.SCCWRP2K/Desktop/tidaldiagram1.png', width = 3.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram1.png', width = 5.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
 p1a
 dev.off()
-png('C:/Users/Marcus.SCCWRP2K/Desktop/tidaldiagram2.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram2.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
 p1b
 dev.off()
-png('C:/Users/Marcus.SCCWRP2K/Desktop/tidaldiagram3.png', width = 3.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram3.png', width = 3.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
 p2a
 dev.off()
-png('C:/Users/Marcus.SCCWRP2K/Desktop/tidaldiagram4.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram4.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
 p2b
 dev.off()
