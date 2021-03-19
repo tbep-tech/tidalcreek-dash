@@ -10,6 +10,7 @@ yr <- 2018
 jei <- 'HC17'
 ylms1 <- c(0.45, 5.9)
 ylms2 <- c(0, 3.25)
+fntsz <- 14
 
 rctcol <- c("green", "yellow", "orange", "coral1")
 alph <- 0.5
@@ -19,9 +20,9 @@ crklen <- tidalcreeks %>%
   pull(Creek_Length_m) %>%
   unique
 
-actlin <- tidaltargets %>%
+prilin <- tidaltargets %>%
   filter(region %in% 'West Central') %>%
-  pull(act)
+  pull(prioritize)
 invlin <- tidaltargets %>%
   filter(region %in% 'West Central') %>%
   pull(investigate)
@@ -57,7 +58,7 @@ datagm <- dat %>%
   mutate(result = exp(result))
 
 
-# act example
+# prioritize example
 toplo1a <- dat %>%
   filter(wbid %in% '1605D')
 toplo1b <- datagm %>%
@@ -72,10 +73,11 @@ p1a <- ggplot(toplo1a, aes(x = date, y = result)) +
   ) +
   theme_minimal() +
   theme(
+    axis.line = element_line(),
     axis.title.x = element_blank(),
     axis.ticks.x = element_line(),
     axis.ticks.y = element_line(),
-    text = element_text(family = fml),
+    text = element_text(family = fml, size = fntsz),
     panel.grid = element_blank()
     )
 
@@ -83,8 +85,8 @@ p1b <- ggplot(toplo1b, aes(x = factor(year), y = result)) +
   # geom_bar(stat = 'identity') +
   annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf,  ymax = caulin, alpha = alph, fill = rctcol[1]) +
   annotate("rect", xmin = -Inf, xmax = Inf, ymin = caulin, ymax = invlin,  alpha = alph, fill = rctcol[2]) +
-  annotate("rect", xmin = -Inf, xmax = Inf, ymin = invlin,  ymax = actlin, alpha = alph, fill = rctcol[3]) +
-  annotate("rect", xmin = -Inf, xmax = Inf, ymin = actlin, ymax = Inf,  alpha = alph, fill = rctcol[4]) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = invlin,  ymax = prilin, alpha = alph, fill = rctcol[3]) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = prilin, ymax = Inf,  alpha = alph, fill = rctcol[4]) +
   geom_bar(stat = 'identity', alpha = 0.8) +
   coord_cartesian(ylim = ylms2) +
   labs(
@@ -94,7 +96,7 @@ p1b <- ggplot(toplo1b, aes(x = factor(year), y = result)) +
   theme_bw() +
   theme(
     axis.title.x = element_blank(),
-    text = element_text(family = fml),
+    text = element_text(family = fml, size = fntsz),
     panel.grid = element_blank()
   )
 
@@ -126,8 +128,8 @@ p2b <- ggplot(toplo2b, aes(x = factor(year), y = result)) +
   # geom_bar(stat = 'identity') +
   annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf,  ymax = caulin, alpha = alph, fill = rctcol[1]) +
   annotate("rect", xmin = -Inf, xmax = Inf, ymin = caulin, ymax = invlin,  alpha = alph, fill = rctcol[2]) +
-  annotate("rect", xmin = -Inf, xmax = Inf, ymin = invlin,  ymax = actlin, alpha = alph, fill = rctcol[3]) +
-  annotate("rect", xmin = -Inf, xmax = Inf, ymin = actlin, ymax = Inf,  alpha = alph, fill = rctcol[4]) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = invlin,  ymax = prilin, alpha = alph, fill = rctcol[3]) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = prilin, ymax = Inf,  alpha = alph, fill = rctcol[4]) +
   geom_bar(stat = 'identity', alpha = 0.9) +
   coord_cartesian(ylim = ylms2) +
   labs(
@@ -137,7 +139,7 @@ p2b <- ggplot(toplo2b, aes(x = factor(year), y = result)) +
   theme_bw() +
   theme(
     axis.title.x = element_blank(),
-    text = element_text(family = fml),
+    text = element_text(family = fml, size = fntsz),
     panel.grid = element_blank()
   )
 

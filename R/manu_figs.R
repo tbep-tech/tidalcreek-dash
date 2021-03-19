@@ -61,7 +61,7 @@ p1 <- ggplot2::ggplot(toplo1, ggplot2::aes(y = id, x = indyr, fill = indyr, alph
   ggplot2::geom_tile(colour = NA) +
   ggplot2::scale_alpha_continuous('Years', range = c(0, 1), limits = c(0, 10), breaks = c(0, 5, 10)) +
   ggplot2::scale_x_discrete(expand = c(0,0)) +
-  ggplot2::scale_y_discrete(expand = c(0,0), labels = toplo2$name) +
+  ggplot2::scale_y_discrete(expand = c(0,0)) +
   ggplot2::labs(
     x = 'Individual year results',
     y = 'Creek Id, name'
@@ -85,6 +85,6 @@ p2 <- ggplot2::ggplot(toplo2, ggplot2::aes(y = id, x = 'Final category', fill = 
 # combine
 out <- p1 + p2 + plot_layout(ncol = 2, widths = c(1, 0.2))
 
-jpeg('~/Desktop/fig8.jpg', height = 6, width = 6, units = 'in', res = 300)
+tiff('~/Desktop/fig8.tif', height = 6, width = 6.5, units = 'in', res = 300, compression = 'lzw')
 print(out)
 dev.off()
