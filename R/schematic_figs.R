@@ -143,15 +143,15 @@ p2b <- ggplot(toplo2b, aes(x = factor(year), y = result)) +
     panel.grid = element_blank()
   )
 
-png('~/Desktop/TBEP/tidal creeks/tidaldiagram1.png', width = 5.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram1.png', width = 5.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 500)
 p1a
 dev.off()
-png('~/Desktop/TBEP/tidal creeks/tidaldiagram2.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram2.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 500)
 p1b
 dev.off()
-png('~/Desktop/TBEP/tidal creeks/tidaldiagram3.png', width = 3.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram3.png', width = 3.5, height = 2.5, unit = 'in', family = 'Lato Light', res = 500)
 p2a
 dev.off()
-png('~/Desktop/TBEP/tidal creeks/tidaldiagram4.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 300)
+png('~/Desktop/TBEP/tidal creeks/tidaldiagram4.png', width = 6, height = 2.5, unit = 'in', family = 'Lato Light', res = 500)
 p2b
 dev.off()
