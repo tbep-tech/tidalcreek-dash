@@ -480,13 +480,15 @@ knitr::include_graphics('www/bannerimage.png')
 
 The objective of the tidal creek dashboard is to provide a screening level assessment of tidal creek water quality using a "Report Card" type scoring system and calculations of site specific indicators of creek condition.
 
-The __DETAILS__ page provides an explanation of the methodology for generating the Report Card outcomes.
+The [__DETAILS__](#details) page provides an explanation of the methodology for generating the Report Card outcomes.
 
-The __REPORT CARD__ page provides a way to summarize report card outcomes (map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explains the use and interpretation of the report card.  
+The [__REPORT CARD__](#report-card) page provides a way to summarize report card outcomes (map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explains the use and interpretation of the report card.  
 
-The __INDIVIDUAL CREEK INDICATORS__ page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
+The [__INDIVIDUAL CREEK INDICATORS__](#individual-creek-indicators) page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
 
 All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://drive.google.com/file/d/1YeaZUqIFiak8KdJLSqNrCsQETf8_XTzZ/view){target="_blank"} and [2019](https://drive.google.com/file/d/1n4okSVtNSswVXv1Lje-qMopNZdvUrQnt/view){target="_blank"} reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/){target="_blank"}, Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash){target="_blank"}.
+
+<a rel='license' href='http://creativecommons.org/licenses/by/4.0/'><img alt='Creative Commons License' style='border-width:0' src='https://i.creativecommons.org/l/by/4.0/88x31.png' /></a>&nbsp;&nbsp;This dashboard is licensed under a <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License</a>.
 
 [![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629){target="_blank"}
 
