@@ -480,15 +480,17 @@ knitr::include_graphics('www/bannerimage.png')
 
 The objective of the tidal creek dashboard is to provide a screening level assessment of tidal creek water quality using a "Report Card" type scoring system and calculations of site specific indicators of creek condition.
 
-The __DETAILS__ page provides an explanation of the methodology for generating the Report Card outcomes.
+The [__DETAILS__](#details) page provides an explanation of the methodology for generating the Report Card outcomes.
 
-The __REPORT CARD__ page provides a way to summarize report card outcomes (map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explains the use and interpretation of the report card.  
+The [__REPORT CARD__](#report-card) page provides a way to summarize report card outcomes (map selection tab) by drawing a polygon over any particular group of creeks and visualizing summary statistics of those report card outcomes. This page also includes tabs to download the report card outcomes (download) and a tab (use and interpretation) that explains the use and interpretation of the report card.  
 
-The __INDIVIDUAL CREEK INDICATORS__ page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
+The [__INDIVIDUAL CREEK INDICATORS__](#individual-creek-indicators) page provides in depth examination of the data for an individual creek by clicking on any creek with data in the population. This page includes tabs containing "Bar plots" of annual water quality statistics, the distribution of those statistics relative to the population of creeks with data (Relative Values tab), and a tab containing use and interpretation of the individual creek metrics.
 
-All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://tbeptech.org/TBEP_TECH_PUBS/2016/TBEP_02_16_SW_FL_Tidal_Creeks_Final_Draft_Report_160121.pdf) and [2019](https://tbeptech.org/TBEP_TECH_PUBS/2019/TBEP_13_19_2019_Tidal_Creeks_Final_Report.pdf) reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/), Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash).
+All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://drive.google.com/file/d/1YeaZUqIFiak8KdJLSqNrCsQETf8_XTzZ/view){target="_blank"} and [2019](https://drive.google.com/file/d/1n4okSVtNSswVXv1Lje-qMopNZdvUrQnt/view){target="_blank"} reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/){target="_blank"}, Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash){target="_blank"}.
 
-[![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629)
+<a rel='license' href='http://creativecommons.org/licenses/by/4.0/'><img alt='Creative Commons License' style='border-width:0' src='https://i.creativecommons.org/l/by/4.0/88x31.png' /></a>&nbsp;&nbsp;This dashboard is licensed under a <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License</a>.
+
+[![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629){target="_blank"}
 
 </div>
 <div class = "col-md-2"></div>
@@ -508,7 +510,7 @@ Column {data-width=650}
 
 #### Using the dashboard
 
-Tidal creeks or tributaries are essential habitats in the Tampa Bay Estuary and serve as important focal points for understanding watershed inputs that affect water quality. A fundamental goal of the Tampa Bay Estuary Program is to develop effective nutrient management strategies to support the ecological function of tidal tributaries. In partnership with Sarasota Bay NEP, Coastal & Heartland NEP, Mote Marine Laboratory, and local government and agency stakeholders, preliminary methods have been developed for assessing the health of tidal tributaries for fisheries based on exceedances of nitrogen concentrations ([2016 report](https://tbeptech.org/TBEP_TECH_PUBS/2016/TBEP_02_16_SW_FL_Tidal_Creeks_Final_Draft_Report_160121.pdf), [2019 report](https://tbeptech.org/TBEP_TECH_PUBS/2019/TBEP_13_19_2019_Tidal_Creeks_Final_Report.pdf)). These assessments can support tracking of water quality management goals and can help refine restoration and management plans in priority tributaries, including those in need of hydrologic restoration that can support critical nursery habitats for sportfishes.
+Tidal creeks or tributaries are essential habitats in the Tampa Bay Estuary and serve as important focal points for understanding watershed inputs that affect water quality. A fundamental goal of the Tampa Bay Estuary Program is to develop effective nutrient management strategies to support the ecological function of tidal tributaries. In partnership with Sarasota Bay NEP, Coastal & Heartland NEP, Mote Marine Laboratory, and local government and agency stakeholders, preliminary methods have been developed for assessing the health of tidal tributaries for fisheries based on exceedances of nitrogen concentrations ([2016 report](https://drive.google.com/file/d/1YeaZUqIFiak8KdJLSqNrCsQETf8_XTzZ/view){target="_blank"}, [2019 report](https://drive.google.com/file/d/1n4okSVtNSswVXv1Lje-qMopNZdvUrQnt/view){target="_blank"}). These assessments can support tracking of water quality management goals and can help refine restoration and management plans in priority tributaries, including those in need of hydrologic restoration that can support critical nursery habitats for sportfishes.
 
 This dashboard provides an interface to view and download results for all tidal creeks in the identified population of over 300 creeks in southwest Florida. The **REPORT CARD** tab provides an overview of creek scores across the region and the **INDIVIDUAL CREEK INDICATORS** tab provides detailed information for selected creeks.  Click on each tab to view the results, download data, and read more about the information presented.
 
@@ -528,7 +530,7 @@ Similar to the [water quality report card](https://shiny.tbep.org/wq-dash/), tid
 
 Conceptually, these thresholds appear in the figure below.
 
-```{r, echo = F, out.width = '50%', fig.align = 'center'}
+```{r, echo = F, out.width = '65%', fig.align = 'center'}
 knitr::include_graphics('www/tidalcreekreport.PNG')
 ```
 
@@ -557,9 +559,9 @@ knitr::include_graphics('www/tidalcreekschematic.png')
 
 Finally, it is important to note that the framework outcomes do not carry any regulatory authority and are not intended to supersede any State or Federal regulatory standards currently in place, including aquatic life criteria used to evaluate waterbody impairments or pollutant load reduction goals associated with existing or forthcoming total maximum daily loads (TMDLs). The nutrient management framework was developed to serve as a screening tool to identify creeks with elevated nutrient concentrations for further evaluation to protect their in stream ecology but is not designed to explicitly identify regulatory impairments (or lack thereof) or the needs of downstream waterbodies such as larger estuarine waters that may be in need of nutrient load reductions.
 
-All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://tbeptech.org/TBEP_TECH_PUBS/2016/TBEP_02_16_SW_FL_Tidal_Creeks_Final_Draft_Report_160121.pdf) and [2019](https://tbeptech.org/TBEP_TECH_PUBS/2019/TBEP_13_19_2019_Tidal_Creeks_Final_Report.pdf) reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/), Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash).
+All site content created by [Marcus Beck](mbeck@tbep.org).  Original tidal creek scoring method adapted from code created by [Mike Wessel](mwessel@janickienvironmental.com), full methods described in the [2016](https://drive.google.com/file/d/1YeaZUqIFiak8KdJLSqNrCsQETf8_XTzZ/view){target="_blank"} and [2019](https://drive.google.com/file/d/1n4okSVtNSswVXv1Lje-qMopNZdvUrQnt/view){target="_blank"} reports.  Original data from Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/){target="_blank"}, Run 56. The page source content can be viewed on [Github](https://github.com/tbep-tech/tidalcreek-dash){target="_blank"}.
 
-[![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629)
+[![DOI](https://zenodo.org/badge/231956629.svg)](https://zenodo.org/badge/latestdoi/231956629){target="_blank"}
 
 </div>
 <div class = "col-md-2"></div>
