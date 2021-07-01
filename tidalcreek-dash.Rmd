@@ -33,6 +33,8 @@ library(shinyWidgets)
 data(bnds)
 data(tidres)
 data(tidalcreeks)
+data(cntdat)
+data(cntdatrdr)
 
 st_crs(bnds) <- 4326
 st_crs(tidalcreeks) <- 4326
@@ -45,10 +47,6 @@ source('R/funcs.R')
 
 # iwr ref year
 yr <- 2018
-
-# context data
-cntdat <- anlz_tdlcrkindic(tidalcreeks, iwrraw, yr = yr) %>% 
-  select(id, wbid, JEI, class, year, CHLAC, DO, TN, chla_tn_ratio, tsi, no23_source, no23_tidal, no23_ratio)
 
 # color ramp for indicator plots
 pal <- RColorBrewer::brewer.pal(8,  'Blues')
@@ -350,6 +348,18 @@ seltxt <- reactive({
   
   out <- paste0(seldat$name, ' (WBID: ', seldat$wbid, ', JEI: ', seldat$JEI, ', class: ', seldat$class, ')')
   
+  return(out)
+  
+})
+
+# radar plot of context indicators for selected creek
+cntcrkrdr <- reactive({
+  
+  # inputs
+  req(selcrk)
+  
+  out <- try({show_tdlcrkradar(selcrk, cntdatrdr)}, silent = T)
+
   return(out)
   
 })
@@ -696,6 +706,31 @@ column(12,
     })
   )
 )
+```
+
+### RADAR PLOTS
+
+```{r}
+renderPlot({
+  
+  validate(
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
+  )
+  
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+  
+  # input
+  cntcrkrdr <- cntcrkrdr()
+  
+  validate(
+    need(!inherits(cntcrkrdr, 'try-error'), 'Not a marine tidal creek (select 3M, 2 above)')
+  )
+  
+  cntcrkrdr
+
+})
 ```
 
 ### BAR PLOTS
