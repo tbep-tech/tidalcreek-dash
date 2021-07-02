@@ -358,7 +358,7 @@ cntcrkrdr <- reactive({
   # inputs
   req(selcrk)
   
-  out <- try({show_tdlcrkradar(selcrk, cntdatrdr)}, silent = T)
+  out <- try({show_tdlcrkradar(selcrk, cntdatrdr, lbsz = 1.5, ptsz = 2.5)}, silent = T)
 
   return(out)
   
@@ -723,7 +723,7 @@ renderPlot({
   
   # input
   cntcrkrdr <- cntcrkrdr()
-  
+
   validate(
     need(!inherits(cntcrkrdr, 'try-error'), 'Not a marine tidal creek (select 3M, 2 above)')
   )
@@ -781,6 +781,8 @@ Several years of data included in the IWR database are used to estimate the summ
 1. __Nitrate ratio__: Ratio of inorganic nitrate concentrations between source (upstream/freshwater) and tidal portions of a creek.  Values greater than one indicate the upstream portion is a source of nitrate.
 
 Indicator data are summarized for individual creeks in the BAR PLOTS and RELATIVE VALUES tabs.  Each plot shows the annual geometric means of additional water quality measurements for the ten years of data that were used to define the score categories in the REPORT CARD. Averages for each year of available data at each wbid/JEI combination are returned for each indicator and threshold lines can be shown on each plot that indicate values above or below (depending on the indicator) at which water quality conditions may be degraded.  
+
+The RADAR PLOTS show the percentage of years where an indicator exceeds a relevant threshold. This only applies to the marine WBIDs of the tidal creeks (Florida DEP class 2, 3M). Six indicators are returned with percentage exceedances based on total nitrogen greater than 1.1 mg/L, chlorophyll greater than 11 ug/L, trophic state index greater than 55 (out of 100), nitrate/nitrite ratio between marine and upstream segments greater than one, chlorophyll and total nitrogen ratios > 15, and percentage of years more where than ten percent of observations were below DO percent saturation of 42.  The plot can provide a quick visual assessment of water qaulity characteristics to prioritize for management actions to improve creek condition.
 
 The BAR PLOTS are annual averages for the six context indicators at the selected creek.  These plots can be used to assess:
 
