@@ -2,11 +2,11 @@
 colfun <- function(x){
   
   out <- case_when(
-    x == 'No Data' ~ 'lightblue', 
-    x == 'Monitor' ~ '#00ff00', 
-    x == 'Caution' ~ 'yellow', 
-    x == 'Investigate' ~ 'orange', 
-    x == 'Prioritize' ~ 'coral'
+    x == 'No Data' ~ '#ADD8E6', 
+    x == 'Monitor' ~ '#2DC938', 
+    x == 'Caution' ~ '#E9C318', 
+    x == 'Investigate' ~ '#EE7600', 
+    x == 'Prioritize' ~ '#FF4040'
   )
   
   return(out)
@@ -15,7 +15,7 @@ colfun <- function(x){
 
 # color palette for leaflet
 pal_exp <- leaflet::colorFactor(
-  palette = c('lightblue', 'green', 'yellow', 'orange', 'coral'),
+  palette = c('#ADD8E6', '#2DC938', '#E9C318', '#EE7600', '#FF4040'),
   levels = c('No Data', 'Monitor', 'Caution', 'Investigate', 'Prioritize')
 )
 
@@ -24,11 +24,11 @@ sumfun <- function(mapsel, sumsel, typsel, filt){
   
   # select color
   gaugecols <- list(
-    `No Data` = 'lightblue', 
-    `Monitor` = '#00ff00',
-    `Caution` = '#ffff00', 
-    `Investigate` = 'orange', 
-    `Prioritize` = 'coral'
+    `No Data` = '#ADD8E6', 
+    `Monitor` = '#2DC938',
+    `Caution` = '#E9C318', 
+    `Investigate` = '#EE7600', 
+    `Prioritize` = '#FF4040'
   )
   col <- gaugecols[[filt]]
   
