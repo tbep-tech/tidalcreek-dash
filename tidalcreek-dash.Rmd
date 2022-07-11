@@ -175,7 +175,7 @@ maptab <- reactive({
                            aggregate = 'sum'
                          )
                     ), 
-                   groupBy = 'score',
+                   # groupBy = 'score',
                    filterable = T, pageSizeOptions = c(10, 20, nrow(mapsel)), defaultPageSize = 10,
                    showPageSizeOptions = T, compact = T
   )
@@ -662,22 +662,16 @@ In the below example, a custom polygon was drawn over creeks that drain into Tam
 <img src="www/mapdraw2.PNG" height="100%" width="400">
 <br>
 
-The MAP SELECTION tab shows a table that summarizes the number of creeks in each score category for the selection from the map.  The table is grouped by each category with the total number of creeks shows in parentheses.  In the current selection, there are 49 creeks in the "Monitor" category, 113 with "No Data", 11 in "Investigate", 12 in "Prioritize", and one creek in the "Caution" category.  The total creek length in each category is shown in the "Length (km)" column (e.g., there are 368 km of creeks in the "Monitor" category).  The remaining columns ("monitor", "caution", "investigate", "prioritize") are counts of the number of years in the previous ten years that creeks were categorized accordingly.  The distribution of the counts in these categories define the overall creek score (e.g., if a creek has more years in the prioritize category, it will likely be assigned an overall score of "Prioritize"). The unexpanded table should look like this: 
+The MAP SELECTION tab shows a table for the creeks that were selected with the map polygon.  Creeks are assigned to score categories shown in the far left column, i.e., "No Data", "Monitor", "Caution", "Investigate", or "Prioritize".  The "wbid" and "JEI" columns are used as unique identifiers for each creek and the "Class" shows creeks assigned to tidal (3M or 2) or freshwater categories (3F or 1) based on designations used by the Florida Department of Environmental Protection.  The total creek length is shown in kilometers with a horizontal bar in proportion to the length. The remaining columns ("monitor", "caution", "investigate", "prioritize") are counts of the number of years in the previous ten years that each creek was categorized accordingly.  The distribution of the counts in these categories define the overall creek score (e.g., if a creek has more years in the prioritize category, it will likely be assigned an overall score of "Prioritize").
 
 <br>
 <img src="www/selex1.PNG" height="100%" width="1000">
 <br>
 
-The categories in the table can be expanded by clicking on a row.  The expanded rows show data for the individual creeks that are assigned to each category.  The bar plots for the length column indicate relative lengths of each creek.  The expanded table should look like this (only the "Investigate" and "Prioritize" categories are shown below):  
+The gauges on the bottom of the MAP SELECTION tab provide additional summaries of the distribution of creeks by category for the selection.  Summaries can show a percentage of creeks in each category, the  number of creeks in each category, percentages of the total creek length in each category, and the total creek length as a sum in each category.  In the example selection, there are 643 km of creeks with "No Data", 380 km in the "Monitor" category, 28 km in the "Caution" category, 66 km in the "Investigate" category, and 107 km in the "Prioritize" category. 
 
 <br>
 <img src="www/selex2.PNG" height="100%" width="1000">
-<br>
-
-The gauges on the bottom of the MAP SELECTION tab provide additional summaries of the distribution of creeks by category for the selection.  Summaries can show a percentage of creeks in each category, the  number of creeks in each category, percentages of the total creek length in each category, and the total creek length as a sum in each category.  In the example selection, there are 734 km of creeks with "No Data", 368 km in the "Monitor" category, 3 km in the "Caution" category, 78 km in the "Investigate" category, and 78 km in the "Prioritize" category. 
-
-<br>
-<img src="www/selex3.PNG" height="100%" width="1000">
 <br>
 
 The DOWNLOAD tab provides the same information as the previous tab, except that the creeks are not grouped by score category.  The "Download table" button can be clicked to download the summary data for the current map selection. 
