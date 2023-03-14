@@ -12,8 +12,8 @@ ylms1 <- c(0.45, 5.9)
 ylms2 <- c(0, 3.25)
 fntsz <- 14
 
-rctcol <- c("green", "yellow", "orange", "coral1")
-alph <- 0.5
+rctcol <- c("#2DC938", "#E9C318", "#EE7600", "#FF4040")
+alph <- 1
 
 crklen <- tidalcreeks %>%
   filter(JEI %in% !!jei) %>%
