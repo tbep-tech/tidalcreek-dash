@@ -43,7 +43,7 @@ tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
 source('R/funcs.R')
 
 # iwr ref year
-yr <- 2021
+yr <- 2022
 
 # color ramp for indicator plots
 pal <- RColorBrewer::brewer.pal(8,  'Blues')
@@ -485,7 +485,7 @@ Column {data-width=650}
 knitr::include_graphics('www/bannerimage.png')
 ```
 
-The objective of the tidal creek dashboard is to provide a screening level evaluation of tidal creek water quality across a large population of creeks using a "Report Card" type scoring system as well as a host of site-specific indicators of creek condition that resource managers can utilize to help prioritize management level investigations. The dashboard contents are not regulatory evaluations and do not carry any regulatory authority. Rather, the dashboard provides supplemental information that resource managers and researchers can use to evaluate additional information on creek condition for creeks with adverse regulatory outcomes and for all creeks outside of any regulatory framework. The following bullets describe the dashboard contents. The dashboard is currently using Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/){target="_blank"}, Run 61 (posted 5-27-2021). 
+The objective of the tidal creek dashboard is to provide a screening level evaluation of tidal creek water quality across a large population of creeks using a "Report Card" type scoring system as well as a host of site-specific indicators of creek condition that resource managers can utilize to help prioritize management level investigations. The dashboard contents are not regulatory evaluations and do not carry any regulatory authority. Rather, the dashboard provides supplemental information that resource managers and researchers can use to evaluate additional information on creek condition for creeks with adverse regulatory outcomes and for all creeks outside of any regulatory framework. The following bullets describe the dashboard contents. The dashboard is currently using Florida DEP [Impaired Waters Rule](http://publicfiles.dep.state.fl.us/dear/IWR/){target="_blank"}, Run 64. 
 
 The [__DETAILS__](#details) page provides an explanation of the methodology for generating the Report Card outcomes.
 
@@ -525,7 +525,7 @@ This dashboard provides an interface to view and download results for all tidal 
 
 #### Methods
 
-The tidal creek dashboard uses data included in the [tbeptools](https://tbep-tech.github.io/tbeptools/) package for the population of tidal creeks in southwest Florida, including those creeks designated as tidal ([FDEP classes](https://floridadep.gov/dear/water-quality-standards/content/surface-water-quality-standards-classes-uses-criteria) 2 and 3M) as well as stations located in the contributing freshwater portion of the stream within 1.6 kilometers of the estimated saltwater interface. The assessments use data from the FDEP [Impaired Waters Rule](https://www.flrules.org/gateway/ChapterHome.asp?Chapter=62-303) database, currently updated to Run 61 available [here](http://publicfiles.dep.state.fl.us/DEAR/IWR/). This run includes data through May 27th, 2021, although 2021 data are removed from the evaluations. Raw data for both the IWR database and the tidal creek spatial date are available from the tbeptools package (see the [vignette](https://tbep-tech.github.io/tbeptools/articles/tidalcreeks.html)).  
+The tidal creek dashboard uses data included in the [tbeptools](https://tbep-tech.github.io/tbeptools/) package for the population of tidal creeks in southwest Florida, including those creeks designated as tidal ([FDEP classes](https://floridadep.gov/dear/water-quality-standards/content/surface-water-quality-standards-classes-uses-criteria) 2 and 3M) as well as stations located in the contributing freshwater portion of the stream within 1.6 kilometers of the estimated saltwater interface. The assessments use data from the FDEP [Impaired Waters Rule](https://www.flrules.org/gateway/ChapterHome.asp?Chapter=62-303) database, currently updated to Run 64 available [here](http://publicfiles.dep.state.fl.us/DEAR/IWR/). Raw data for both the IWR database and the tidal creek spatial date are available from the tbeptools package (see the [vignette](https://tbep-tech.github.io/tbeptools/articles/tidalcreeks.html)).  
 
 Similar to the [water quality report card](https://shiny.tbep.org/wq-dash/), tidal creeks are assigned to categories within a management framework intended to serve as both a mechanism for evaluating data relative to the need for management actions, and to identify stewardship goals that, if properly pursued, preclude the need for any regulatory actions.  These categories were based on fish as a biological response indicator.  Additional indicators that may be more sensitive to elevated nutrient concentrations have not yet been identified and are an area of current research.  Tidal creeks are assigned to one of five categories: 
 
