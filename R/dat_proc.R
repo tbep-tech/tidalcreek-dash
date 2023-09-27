@@ -1,6 +1,7 @@
 library(tbeptools)
 library(tidyverse)
 library(here)
+library(sf)
 
 # tidal creek results -----------------------------------------------------
 
@@ -23,3 +24,12 @@ cntdatrdr <- anlz_tdlcrkindic(tidalcreeks, iwrraw, radar = T)
 
 save(cntdatrdr, file = here::here('data', 'cntdatrdr.RData'), version = 2)
 
+# # wbids ---------------------------------------------------------------------------------------
+# 
+# library(sf)
+# library(mapview)
+# 
+# # run64 WBIDs
+# wbid <- st_read('https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/WBIDS/MapServer/0/query?outFields=*&where=1%3D1&f=geojson')
+# 
+# wbid <- filter(wbid, WBID %in% unique(tidalcreeks$wbid))
