@@ -24,12 +24,18 @@ cntdatrdr <- anlz_tdlcrkindic(tidalcreeks, iwrraw, radar = T)
 
 save(cntdatrdr, file = here::here('data', 'cntdatrdr.RData'), version = 2)
 
-# # wbids ---------------------------------------------------------------------------------------
-# 
-# library(sf)
-# library(mapview)
-# 
-# # run64 WBIDs
-# wbid <- st_read('https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/WBIDS/MapServer/0/query?outFields=*&where=1%3D1&f=geojson')
-# 
-# wbid <- filter(wbid, WBID %in% unique(tidalcreeks$wbid))
+# wbids ---------------------------------------------------------------------------------------
+
+library(sf)
+library(mapview)
+
+# run64 WBIDs
+wbidraw <- st_read('https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/WBIDS/MapServer/0/query?outFields=*&where=1%3D1&f=geojson')
+
+wbid <- wbidraw %>% 
+  filter(WBID %in% unique(tidalcreeks$wbid)) %>% 
+  select(wbid = WBID) %>% 
+  st_make_valid() %>% 
+  st_simplify(dTolerance = 20)
+
+save(wbid, file = here::here('data', 'wbid.RData'), version = 2)

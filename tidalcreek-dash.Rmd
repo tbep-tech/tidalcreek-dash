@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 library(flexdashboard)
 library(tidyverse)
 library(tbeptools)
-# devtools::load_all('../tbeptools')
 library(mapedit)
 library(leaflet.extras)
 library(sf)
@@ -32,6 +31,7 @@ library(shinyWidgets)
 
 data(tidres)
 data(tidalcreeks)
+data(wbid)
 data(cntdat)
 data(cntdatrdr)
 
@@ -420,15 +420,19 @@ observeEvent(input$map_shape_click, {
   selcrk <<- input$map_shape_click$id
 })
 
-observeEvent(input$map_shape_click, {
+# observe event triggered when map clicked or wbid selection switch used
+observeEvent(ignoreInit = T, list(input$map_shape_click, input$wbdsel), {
   
   # input
   tomap <- tomap()
+  wbdsel <- input$wbdsel
+  
+  req(selcrk)
   
   # filter spatial data by selection
   selcrkln <- tidalcreeks %>% 
     filter(id %in% selcrk)
-  
+
   # clear markers on input select, add all points and selected point
   map <- map %>% 
     leaflet::clearMarkers() %>%
@@ -443,7 +447,18 @@ observeEvent(input$map_shape_click, {
     leaflet::addPolylines(data = tomap, opacity = 0, weight = 12,
               layerId = ~id, label = ~paste0("WBID: ", wbid, ", JEI: ", JEI, ', Name: ', name, ', Creek score: ', score)
     )
-
+  
+  if(wbdsel){
+    
+    # filter wbid boundary by selection
+    selwbd <- wbid %>% 
+      dplyr::filter(wbid %in% selcrkln$wbid)
+    
+     map <- map %>% 
+      leaflet::addPolygons(data = selwbd, color = 'black', fill = F)
+   
+  }
+  
 })
 ```
 
@@ -693,6 +708,7 @@ Column {.tabset .tabset-fade data-width=650}
 column(12, 
   inputPanel(
     selectInput(inputId = 'clssel2', label = 'Toggle creek type?', choices = list('All' = '^3M$|^3F$|^2$|^1$', `Tidal (class 3M, 2)` = '^3M$|^2$', `Fresh (class 3F, 1)` = '^3F$|^1$'), selected = 'All'),
+    materialSwitch(inputId = 'wbdsel', label = 'Show WBID boundary on map?'),
     materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?'),
     renderText(seltxt()),
     renderUI({
@@ -803,8 +819,8 @@ The RELATIVE VALUES tab shows similar information except that empirical cumulati
 
 In the above figure, the values for the selected creek are overlaid on the CDF curve. Compared to the rest of the creeks in the dataset, the TSI values for the selected creek are relatively lower (less than the 25th percentile).  
 
-Finally, the controls at the top can be used to toggle the threshold lines, view information about the selected creek, and download the data for the context indicators for the selected creek. 
+Finally, the controls at the top can be used to display WBID boundaries (Florida DEP regulatory boundaries, not a true watershed) for the selected creek on the map, the threshold lines, view information about the selected creek, and download the data for the context indicators for the selected creek. 
 
 <br>
-<img src="www/selcreekcontrols.png" height="100%" width="500">
+<img src="www/selcreekcontrols.png" height="100%" width="600">
 <br>
