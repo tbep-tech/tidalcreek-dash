@@ -26,11 +26,10 @@ save(cntdatrdr, file = here::here('data', 'cntdatrdr.RData'), version = 2)
 
 # wbids ---------------------------------------------------------------------------------------
 
-library(sf)
-library(mapview)
-
-# run66 WBIDs
-wbidraw <- st_read('https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/WBIDS/MapServer/0/query?outFields=*&where=1%3D1&f=geojson')
+# run67 WBIDs
+# wbidraw <- st_read('https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/WBIDS/MapServer/0/query?outFields=*&where=1%3D1&f=geojson')
+# manual download for 67 (found via google), not updated through API yet
+wbidraw <- st_read('~/Desktop/WBIDs_Run67/')
 
 wbid <- wbidraw %>% 
   filter(WBID %in% unique(tidalcreeks$wbid)) %>% 

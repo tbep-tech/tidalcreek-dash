@@ -43,7 +43,7 @@ tidres <- tidres[tidres$id %in% tidalcreeks$id, ]
 source('R/funcs.R')
 
 # iwr ref year
-yr <- 2024
+yr <- 2025
 
 # color ramp for indicator plots
 pal <- RColorBrewer::brewer.pal(8,  'Blues')
