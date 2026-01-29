@@ -35,6 +35,7 @@ wbid <- wbidraw %>%
   filter(WBID %in% unique(tidalcreeks$wbid)) %>% 
   select(wbid = WBID) %>% 
   st_make_valid() %>% 
-  st_simplify(dTolerance = 20)
+  st_simplify(dTolerance = 20) |> 
+  st_transform(crs = 4326)
 
 save(wbid, file = here::here('data', 'wbid.RData'), version = 2)
