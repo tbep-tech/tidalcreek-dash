@@ -6,7 +6,7 @@ output:
     social: menu
     source_code: "https://github.com/tbep-tech/tidalcreek-dash"
     includes: 
-      in_header: google-analytics.html   
+      in_header: [google-analytics.html, loading_in_header.html]
 runtime: shiny
 css: styles.css
 ---
