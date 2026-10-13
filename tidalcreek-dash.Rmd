@@ -7,13 +7,14 @@ output:
     source_code: "https://github.com/tbep-tech/tidalcreek-dash"
     includes: 
       in_header: [google-analytics.html, loading_in_header.html]
-runtime: shiny
-css: styles.css
+runtime: shiny_prerendered
+css: www/styles.css
 ---
 
-```{r setup, include=F}
+```{r setup, include=F, context='setup'}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
+library(shiny)
 library(flexdashboard)
 library(tidyverse)
 library(tbeptools)
@@ -27,7 +28,7 @@ library(shinyWidgets)
 
 # # style file
 # styles <- readLines('https://raw.githubusercontent.com/tbep-tech/css-styling/master/styles.css')
-# writeLines(styles, 'styles.css')
+# writeLines(styles, 'www/styles.css')
 
 data(tidres)
 data(tidalcreeks)
@@ -55,7 +56,7 @@ downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...) 
 }
 ```
 
-```{r reactives}
+```{r reactives, context='server'}
 # overview map
 allmap <- reactive({
   
@@ -390,7 +391,7 @@ cntcrkcdf <- reactive({
 })
 ```
 
-```{r map}
+```{r map, context='server'}
 # polyline selection
 output$map <- renderLeaflet({
   
@@ -458,11 +459,84 @@ observeEvent(ignoreInit = T, list(input$map_shape_click, input$wbdsel), {
       leaflet::addPolygons(data = selwbd, color = 'black', fill = F)
    
   }
-  
+
 })
 ```
 
-```{r downloadhandlers}
+```{r outputs, context='server'}
+# map won't render on startup unless assessment tab selected to trigger maptab
+output$maptab <- renderReactable(maptab())
+
+# this renders the map by initializing maptab on startup
+outputOptions(output, "maptab", suspendWhenHidden = FALSE)
+
+output$nodtscr <- renderGauge(nodtscr())
+output$grenscr <- renderGauge(grenscr())
+output$yellscr <- renderGauge(yellscr())
+output$orngscr <- renderGauge(orngscr())
+output$redsscr <- renderGauge(redsscr())
+output$sumtxt <- renderText(sumtxt())
+output$dwntab <- renderReactable(dwntab())
+output$seltxt <- renderText(seltxt())
+output$icdwntab_ui <- renderUI({
+  req(selcrk)
+  downloadButtonRmd('icdwntab', 'Download creek data')
+})
+
+# radar plot
+output$cntcrkrdr <- renderPlot({
+
+  validate(
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
+  )
+
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+
+  # input
+  cntcrkrdr <- cntcrkrdr()
+
+  validate(
+    need(!inherits(cntcrkrdr, 'try-error'), 'Not a marine tidal creek (select 3M, 2 above)')
+  )
+
+  cntcrkrdr
+
+})
+
+# bar plots
+output$cntcrkplo <- renderPlotly({
+
+  validate(
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
+  )
+
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+
+  cntcrkplo()
+
+})
+
+# relative values plots
+output$cntcrkcdf <- renderPlotly({
+
+  validate(
+    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
+  )
+
+  validate(
+    need(!is.null(cntcrkplo()), 'No data...')
+  )
+
+  cntcrkcdf()
+
+})
+```
+
+```{r downloadhandlers, context='server'}
 # data for creek pop selection
 output$cpdwntab <- downloadHandler(
   filename = function(){'tidalcreek_pop.csv'},
@@ -600,12 +674,6 @@ Column {data-width=250}
 -----------------------------------------------------------------------
 
 ```{r}
-# map won't render on startup unless assessment tab selected to trigger maptab
-output$maptab <- renderReactable(maptab())
-
-# this renders the map by initializing maptab on startup
-outputOptions(output, "maptab", suspendWhenHidden = FALSE)
-
 # selection editor
 editModUI('editor')
 ```
@@ -625,19 +693,13 @@ column(12,
 ### MAP SELECTION
 
 ```{r allmap}
-output$nodtscr <- renderGauge(nodtscr())
-output$grenscr <- renderGauge(grenscr())
-output$yellscr <- renderGauge(yellscr())
-output$orngscr <- renderGauge(orngscr())
-output$redsscr <- renderGauge(redsscr())
-
 fillCol(
   flex = c(1, NA, 0.25),
   reactableOutput('maptab'),
   inputPanel(
         selectInput('sumsel', 'Select summary category:', choices = c('by count', 'by creek length')), 
         selectInput('typsel', 'Select summary type:', choices = c('%', 'sum')), 
-        renderText(sumtxt())
+        textOutput('sumtxt')
       ),
   fillRow(
     gaugeOutput('nodtscr'),
@@ -657,7 +719,7 @@ fillCol(
   inputPanel(
     downloadButtonRmd('cpdwntab', 'Download table')
   ),
-  renderReactable(dwntab())
+  reactableOutput('dwntab')
 )
 ```
 
@@ -710,11 +772,8 @@ column(12,
     selectInput(inputId = 'clssel2', label = 'Toggle creek type?', choices = list('All' = '^3M$|^3F$|^2$|^1$', `Tidal (class 3M, 2)` = '^3M$|^2$', `Fresh (class 3F, 1)` = '^3F$|^1$'), selected = 'All'),
     materialSwitch(inputId = 'wbdsel', label = 'Show WBID boundary on map?'),
     materialSwitch(inputId = 'thrsel', label = 'Show reference lines on plots?'),
-    renderText(seltxt()),
-    renderUI({
-      req(selcrk)
-      downloadButtonRmd('icdwntab', 'Download creek data')
-    })
+    textOutput('seltxt'),
+    uiOutput('icdwntab_ui')
   )
 )
 ```
@@ -722,62 +781,19 @@ column(12,
 ### RADAR PLOTS
 
 ```{r}
-renderPlot({
-  
-  validate(
-    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
-  )
-  
-  validate(
-    need(!is.null(cntcrkplo()), 'No data...')
-  )
-  
-  # input
-  cntcrkrdr <- cntcrkrdr()
-
-  validate(
-    need(!inherits(cntcrkrdr, 'try-error'), 'Not a marine tidal creek (select 3M, 2 above)')
-  )
-  
-  cntcrkrdr
-
-})
+plotOutput('cntcrkrdr')
 ```
 
 ### BAR PLOTS
 
 ```{r}
-renderPlotly({
-  
-  validate(
-    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
-  )
-  
-  validate(
-    need(!is.null(cntcrkplo()), 'No data...')
-  )
-  
-  cntcrkplo()
-
-})
+plotlyOutput('cntcrkplo')
 ```
 
 ### RELATIVE VALUES
 
 ```{r}
-renderPlotly({
-  
-  validate(
-    need(!is.null(selcrk), 'Make a selection from the map by clicking on a creek')
-  )
-  
-  validate(
-    need(!is.null(cntcrkplo()), 'No data...')
-  )
-  
-  cntcrkcdf()
-
-})
+plotlyOutput('cntcrkcdf')
 ```
 
 ### USE AND INTERPRETATION
